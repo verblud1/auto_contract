@@ -9,8 +9,13 @@ from datetime import datetime
 # копейки от 6
 # точка в файле меняется на запятую
 # добавить возможность очистки папки вывода от старых решений
+# шаблоны для школ
+#конфиги и чтение из них 
+#txt значения либо ввод в консоли
+#чтобы прога была вроде exe и можно было бы скачать с гитхаба
 
 class AutoContract():
+
     script_dir = os.path.dirname(os.path.abspath(__file__))
     
     output_folder = "schools_output"
@@ -90,4 +95,7 @@ class AutoContract():
             doc.save(output_path)
 
             print(f"{name_doc} успешно создан!")
-        
+
+if __name__ == "__main__":
+    main = AutoContract()
+    exit()
