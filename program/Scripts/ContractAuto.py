@@ -1,7 +1,10 @@
 from docxtpl import DocxTemplate
+import sys
 import os 
 from num2words import num2words
 from datetime import datetime
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from district_schools_config import schoolds_list
 
 # не происходит вызов из словаря школы 
 # добавить обработчики ошибок
