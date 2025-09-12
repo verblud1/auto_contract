@@ -4,7 +4,8 @@ import os
 from num2words import num2words
 from datetime import datetime
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from district_schools_config import schoolds_list
+
+from district_schools_config import schools_list
 
 # не происходит вызов из словаря школы 
 # добавить обработчики ошибок
@@ -17,23 +18,34 @@ from district_schools_config import schoolds_list
 #txt значения либо ввод в консоли
 #чтобы прога была вроде exe и можно было бы скачать с гитхаба
 #шаблоны по октябряь - ноябрь и ноябрь - декабрь однотипные, поэтому можно делать по единым шаблонам в одной папке, где меняется только даты 
+# возможно, добавить ui
+# добавить файл с зависимостями
+#config в json
 
-class AutoContract():
+class AutoContract(self):
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    output_folder = "schools_output"
-    templates_folder = "templates"
-    
-    output_dir = os.path.join(script_dir, output_folder) 
-    templates_dir = os.path.join(script_dir, templates_folder) 
-    
+    def __init__(self):
+        
+        #variables
+        self.script_dir = os.path.dirname(os.path.abspath(__file__))
+
+        self.output_folder = "schools_output"
+        self.templates_folder = "templates"
+
+        self.output_dir = os.path.join(self.script_dir, self.output_folder) 
+        self.templates_dir = os.path.join(self.script_dir, self.templates_folder) 
+        self.school_list_child = schools_list
+
+        #scripts queue
+        
+
+
     #получить названия ключей, потом в них вывести значения ключа name в input,
     # а потом записать введенное в input в значение ключа child_count  
     
     #TEST PART
     #создавать папку в school_output в зависимости от это район или город,
-    #То есть f"{administrative_structure_name} договор {current_time}"(Район договор 12-09-2025) 
+    #То есть f"{administrative_structure_name} договоры {current_time}"(Район договор 12-09-2025) 
     day_count = 40
     cost_eat = 73.51 
     date = "сентября 2025"
@@ -42,7 +54,7 @@ class AutoContract():
     #len example for i in range(len(school_name_list)):    
     
     i=0
-    for key in school_list_childs: 
+    for key in self.school_list_childs: 
         print(i)
         print(key)
         get_childs_count = int(input(f"{school_name_list[i]}: "))
