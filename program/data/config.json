@@ -1,160 +1,162 @@
-{
-    "schools": {
+[
+    {
+        "schools": {
 
-        "town": [
-            {
-                "id":0,
-                "type": "town",
-                "name": "3 СОШ",
-                "child_count": 0
-            },
+            "town": [
+                {
+                    "id":0,
+                    "type": "town",
+                    "name": "3 СОШ",
+                    "child_count": 0
+                },
+                
+                {
+                    "id":1,
+                    "type": "town",
+                    "name": "5 СОШ",
+                    "child_count": 0
+                },
+                
+                {
+                    "id":2,
+                    "type": "town",
+                    "name": "6 СОШ",
+                    "child_count": 0
+                },
+                
+                {
+                    "id":3,
+                    "type": "town",
+                    "name": "12 СОШ",
+                    "child_count": 0
+                },
+                
+                {
+                    "id":4,
+                    "type": "town",
+                    "name": "19 СОШ",
+                    "child_count": 0
+                }, 
+                
+                {
+                    "id":5,
+                    "type": "town",
+                    "name": "10 СОШ",
+                    "child_count": 0
+                }, 
+                
+                {
+                    "id":6,
+                    "type": "town",
+                    "name": "13 СОШ",
+                    "child_count": 0
+                }, 
+                
+                {
+                    "id":7,
+                    "type": "town",
+                    "name": "7 СОШ",
+                    "child_count": 0
+                }, 
             
-            {
-                "id":1,
-                "type": "town",
-                "name": "5 СОШ",
-                "child_count": 0
-            },
-            
-            {
-                "id":2,
-                "type": "town",
-                "name": "6 СОШ",
-                "child_count": 0
-            },
-            
-            {
-                "id":3,
-                "type": "town",
-                "name": "12 СОШ",
-                "child_count": 0
-            },
-            
-            {
-                "id":4,
-                "type": "town",
-                "name": "19 СОШ",
-                "child_count": 0
-            }, 
-            
-            {
-                "id":5,
-                "type": "town",
-                "name": "10 СОШ",
-                "child_count": 0
-            }, 
-            
-            {
-                "id":6,
-                "type": "town",
-                "name": "13 СОШ",
-                "child_count": 0
-            }, 
-            
-            {
-                "id":7,
-                "type": "town",
-                "name": "7 СОШ",
-                "child_count": 0
-            }, 
-        
-            {
-                "id":8,
-                "type": "town",
-                "name": "4 СОШ",
-                "child_count": 0
-            }, 
-            
-            {
-                "id":9,
-                "type": "town",
-                "name": "Гимназия 2",
-                "child_count": 0
-            },
-            
-            {
-                "id":10,
-                "type": "town",
-                "name": "Лицей 15",
-                "child_count": 0
-            }
+                {
+                    "id":8,
+                    "type": "town",
+                    "name": "4 СОШ",
+                    "child_count": 0
+                }, 
+                
+                {
+                    "id":9,
+                    "type": "town",
+                    "name": "Гимназия 2",
+                    "child_count": 0
+                },
+                
+                {
+                    "id":10,
+                    "type": "town",
+                    "name": "Лицей 15",
+                    "child_count": 0
+                }
 
-        ],
+            ],
 
-        "district": [
-        
-            {
-                "id":11,
-                "type": "district",
-                "name": "Академическая",
-                "child_count": 0
-            },
+            "district": [
             
-            {
-                "id":12,
-                "type": "district",
-                "name": "Борисовская",
-                "child_count": 0
-            },
-            
-            {
-                "id":13,
-                "type": "district",
-                "name": "Горняцкая",
-                "child_count": 0
-            },
-            
-            {
-                "id":14,
-                "type": "district",
-                "name": "Дятловская",
-                "child_count": 0
-            },
-            
-            {
-                "id":15,
-                "type": "district",
-                "name": "Есиновичская",
-                "child_count": 0
-            }, 
-            
-            {
-                "id":16,
-                "type": "district",
-                "name": "Зеленогорская",
-                "child_count": 0
-            }, 
-            
-            {
-                "id":17,
-                "type": "district",
-                "name": "Красномайская",
-                "child_count": 0
-            }, 
-            
-            {
-                "id":18,
-                "type": "district",
-                "name": "Солнечная",
-                "child_count": 0
-            }, 
-            
-            {
-                "id":19,
-                "type": "district",
-                "name": "Терелесовская",
-                "child_count": 0
-            }, 
-            
-            {
-                "id":20,
-                "type": "district",
-                "name": "Холохоленская",
-                "child_count": 0
-            }
- 
-        ]
+                {
+                    "id":11,
+                    "type": "district",
+                    "name": "Академическая",
+                    "child_count": 0
+                },
+                
+                {
+                    "id":12,
+                    "type": "district",
+                    "name": "Борисовская",
+                    "child_count": 0
+                },
+                
+                {
+                    "id":13,
+                    "type": "district",
+                    "name": "Горняцкая",
+                    "child_count": 0
+                },
+                
+                {
+                    "id":14,
+                    "type": "district",
+                    "name": "Дятловская",
+                    "child_count": 0
+                },
+                
+                {
+                    "id":15,
+                    "type": "district",
+                    "name": "Есиновичская",
+                    "child_count": 0
+                }, 
+                
+                {
+                    "id":16,
+                    "type": "district",
+                    "name": "Зеленогорская",
+                    "child_count": 0
+                }, 
+                
+                {
+                    "id":17,
+                    "type": "district",
+                    "name": "Красномайская",
+                    "child_count": 0
+                }, 
+                
+                {
+                    "id":18,
+                    "type": "district",
+                    "name": "Солнечная",
+                    "child_count": 0
+                }, 
+                
+                {
+                    "id":19,
+                    "type": "district",
+                    "name": "Терелесовская",
+                    "child_count": 0
+                }, 
+                
+                {
+                    "id":20,
+                    "type": "district",
+                    "name": "Холохоленская",
+                    "child_count": 0
+                }
+    
+            ]
+
+        }
 
     }
-
-}
+]
