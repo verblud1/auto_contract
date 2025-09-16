@@ -6,7 +6,7 @@ from datetime import datetime
 import json
 from pathlib import Path
 
-#переход с os на pathlib
+
 # добавить шаблоны городских школ
 # добавить обработчики ошибок
 # добавить склонения для денег
@@ -28,18 +28,12 @@ script_dir = Path(__file__).parent
 output_dir = script_dir / "schools_output"
 templates_dir = script_dir / "templates"
 
-school_list_child = schools_list
+
 
 #other var
 school_type = ""
 
-#open json
-parent_dir = script_dir.parent
 
-folder_config_dir = parent_dir / "data" / "config.json"
-
-with open(folder_config_dir) as file:
-    schools_data = json.load(file)
     
 #scripts queue
         
@@ -57,7 +51,7 @@ with open(folder_config_dir) as file:
 #date_conclusion = "с 1 сентября 2025 года по 31 октября 2025 года"
 
     #len example for i in range(len(school_name_list)):    
-school_type_answer = int("район или город? (1/2): ")
+school_type_answer = int(input("район или город? (1/2): "))
 if school_type_answer == 1:
     school_type = "district"
 else:
@@ -72,6 +66,17 @@ concl_date_one_part = str(input("С какого числа и года? (в р�
 concl_date_two_part = str(input("По какое число и год?(в род падеже)"))
 date_conclusion =  f"с {concl_date_one_part} по {concl_date_two_part}"
 
+
+#open json
+parent_dir = script_dir.parent
+
+folder_config_dir = parent_dir / "data" / "config.json"
+
+with open(folder_config_dir) as file:
+    schools_data = json.load(file)
+
+#school_config = schools_data["schools"]
+
 #вывод циклом из config.json 
 
 i=0
@@ -79,7 +84,7 @@ for schools in schools_data:
        
     #print(i)
     #print(key)
-    get_childs_count_from_user = int(input(f"{schools["schools"][school_type][i]["name"]}: "))
+    get_childs_count_from_user = int(input( f"{schools_data['schools'][school_type][schools]['name']}: "))
     schools["schools"][school_type][i]["child_count"] = get_childs_count_from_user
     i=i+1
     
@@ -108,24 +113,24 @@ def document_fill():
     folder_output.mkdir(parents=True, exist_ok=True)
     
     i=0
-    for key in school_list_childs:
+    for school in schools_data:
         print(f"ключ: {имя школы}")
-        template_path = templates_dir / f"{имя школы}.docx"
+        template_path = templates_dir / f"{schools_data["schools"][school_type][school]["name"]}.docx"
 
         # Загрузка шаблона
         doc = DocxTemplate(template_path)
 
-        count_money = cost_eat * day_count * school_list_childs[key]
+        count_money = cost_eat * day_count * schools_data["schools"][school_type][school]["child_count"]
         decoding_number_words = number_to_words(count_money) 
 
         
-        name_doc = f'{school_name_list[i]} договор от {current_time}'
+        name_doc = f'{schools_data["schools"][school_type][school]["name"]} договор от {current_time}'
 
         #main
         # Создание контекста для подстановки (переменные в документе)
         context = {
             
-            'child_count': school_list_childs[key], #ост
+            'child_count': schools_data["schools"][school_type][school]["child_count"], #ост
             'day_count': day_count,
             'cost_eat': cost_eat, 
             'count_money': count_money,# ост
