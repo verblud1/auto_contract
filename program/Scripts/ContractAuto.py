@@ -6,12 +6,14 @@ from datetime import datetime
 import json
 from pathlib import Path
 
+# Чистка кода 
+# сделать перевод district and town для названий папок
+# сделать шаблоны школ города
 # перезапись старых решений с запросом этого у юзера
 # try except 
 # СКЛОНЕНИЯ ДЛЯ РУБЛЕЙ
 # ДАТА В ФУТЕРЕ НЕ СТАВИТСЯ  И ГОД ПЕРЕНОСИТСЯ
 # проверить работу с датами ноябрь-декабрь
-# сделать только дату в названиях(12.09.2025)
 # сделать русские названия выводных папок
 # добавить шаблоны городских школ
 # добавить обработчики ошибок
@@ -20,7 +22,6 @@ from pathlib import Path
 # точка в файле меняется на запятую
 # добавить возможность очистки папки вывода от старых решений
 # шаблоны для школ
-# конфиги и чтение из них 
 # чтобы прога была вроде exe и можно было бы скачать с гитхаба
 # шаблоны по октябряь - ноябрь и ноябрь - декабрь однотипные, поэтому можно делать по единым шаблонам в одной папке, где меняется только даты 
 # возможно, добавить ui
@@ -81,9 +82,6 @@ folder_config_dir = parent_dir / "data" / "config.json"
 with open(folder_config_dir) as file:
     schools_data = json.load(file)
 
-#school_config = schools_data["schools"]
-
-#вывод циклом из config.json 
 
 #задаем кол-во детей
 i=0
@@ -108,12 +106,12 @@ def number_to_words(value):
     
     return rubles_words + kopecks_words
     
-#def document_fill():
     
-    #date
-current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-    #create a new folder in school_output
+#date
+current_time = datetime.now().strftime("%Y-%m-%d")
+
+#create a new folder in school_output
 new_output_folder_name = f"{school_type} договоры от {current_time}"
 folder_output = output_dir / new_output_folder_name
 folder_output.mkdir(parents=True, exist_ok=True)
@@ -125,7 +123,7 @@ for school in schools_data[0]["schools"][school_type]:
 
     template_path = templates_dir / school_type / f"{school['name']}.docx"
 
-        # Загрузка шаблона
+    # Загрузка шаблона
     doc = DocxTemplate(template_path)
 
     count_money = cost_eat * day_count * school['child_count']
@@ -134,15 +132,15 @@ for school in schools_data[0]["schools"][school_type]:
         
     name_doc = f"{school['name']} договор от {current_time}"
 
-        #main
-        # Создание контекста для подстановки (переменные в документе)
+        
+    # Создание контекста для подстановки (переменные в документе)
     context = {
             
-        'child_count': school["child_count"], #ост
+        'child_count': school["child_count"], 
         'day_count': day_count,
         'cost_eat': cost_eat, 
-        'count_money': count_money,# ост
-        'decoding_number_words': decoding_number_words, #ост
+        'count_money': count_money,
+        'decoding_number_words': decoding_number_words, 
         'date': date,
         'date_conclusion': date_conclusion
 
