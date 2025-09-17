@@ -6,6 +6,7 @@ from datetime import datetime
 import json
 from pathlib import Path
 
+# найти файл- открыть файл - прочитать файл - прочитать строки и разделить их до ":" и после
 # Чистка кода 
 # сделать перевод district and town для названий папок
 # сделать шаблоны школ города
@@ -42,16 +43,8 @@ output_dir = parent_dir.parent / "schools_output"
 #other var
 school_type = ""
 
-
     
-#scripts queue
-        
-
-
-    #получить названия ключей, потом в них вывести значения ключа name в input,
-    # а потом записать введенное в input в значение ключа child_count  
-    
-    #TEST PART
+#TEST PART
     #создавать папку в school_output в зависимости от это район или город,
     #То есть f"{administrative_structure_name} договоры {current_time}"(Район договор 12-09-2025) 
 day_count = 40
@@ -59,14 +52,15 @@ cost_eat = 73.51
 date = "сентября 2025"
 date_conclusion = "с 1 сентября 2025 года по 31 октября 2025 года"
 
-    #len example for i in range(len(school_name_list)):    
+
 school_type_answer = int(input("район или город? (1/2): "))
 if school_type_answer == 1:
     school_type = "district"
 else:
     school_type = "town"
-        
-#мб вынести в txt
+
+
+#вынести в txt
 #day_count = int(input("кол-во дней: "))
 #cost_eat = float(input("стоимость дня: "))
 #date = str(input("дата: "))
@@ -88,7 +82,6 @@ i=0
 for schools in schools_data[0]["schools"][school_type]:
        
     print(i)
-    #print(key)
     get_childs_count_from_user = int(input( f"{schools['name']}: "))
     schools["child_count"] = get_childs_count_from_user
     i=i+1
