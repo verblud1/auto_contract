@@ -1,23 +1,22 @@
 from docxtpl import DocxTemplate
-import sys
-import os 
 from num2words import num2words
 from datetime import datetime
-import json
 from pathlib import Path
+import json
+import sys
+import os 
 
-
+# когда копейки в стоимости дня такие как 73.50 74.600 то есть ровно десятки проч делать так чтобы не 73.5 а 75.50 
 # Чистка кода 
-# сделать перевод district and town для названий папок
 # сделать шаблоны школ города
 # перезапись старых решений с запросом этого у юзера
 # try except 
 # СКЛОНЕНИЯ ДЛЯ РУБЛЕЙ
-# ДАТА В ФУТЕРЕ НЕ СТАВИТСЯ  И ГОД ПЕРЕНОСИТСЯ
 # проверить работу с датами ноябрь-декабрь
 # сделать русские названия выводных папок
 # добавить шаблоны городских школ
 # добавить обработчики ошибок
+# exe file from script
 # добавить склонения для денег
 # копейки от 6
 # точка в файле меняется на запятую
@@ -57,7 +56,7 @@ else:
         for line in file:
             line = line.strip()  # Удаляем пробелы и переносы строк
             
-            # Разделяем строку по двоеточию
+            # Разделяем строку по двоеточию и проверяем на существование двоеточия
             if ':' in line:
                 
                 part_after_colon = line.split(':', 1)[1].strip()
@@ -98,7 +97,6 @@ with open(folder_config_dir) as file:
 i=0
 for schools in schools_data[0]["schools"][school_type]:
        
-    print(i)
     get_childs_count_from_user = int(input( f"{schools['name']}: "))
     schools["child_count"] = get_childs_count_from_user
     i=i+1
