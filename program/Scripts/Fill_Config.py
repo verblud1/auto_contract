@@ -11,6 +11,34 @@ folder = "/config.json"
 with open(odir) as file:
     schools_data = json.load(file)
 
+date_conclusion=""
+values_file_path = parent_dir.parent / 'common_values.txt'
+
+# Проверка существования файла
+if not os.path.exists(values_file_path):
+    print(f"Файл {values_file_path} не найден!")
+else:
+    # Открытие файла
+    with open(values_file_path, 'r', encoding='utf-8') as file:
+        # Чтение построчно
+        for line in file:
+            line = line.strip()  # Удаляем пробелы и переносы строк
+            
+            # Разделяем строку по двоеточию
+            if ':' in line:
+                
+                part_after_colon = line.split(':', 1)[1].strip()
+                part_before_colon = line.split(':',1)[0].strip()
+                #print(part_after_colon)
+                #print(part_before_colon)
+                if part_before_colon == "Дата заключения договора":
+                    date_conclusion = part_after_colon
+                print(date_conclusion)
+            else:
+                # Обработка строк без двоеточия
+                print(f"Строка без двоеточия: {line}")
+
+
 #print(schools_data[0])
 school_type='district'
 i=0
@@ -27,3 +55,4 @@ for school in schools_data[0]["schools"][school_type]:
       #  print(count_money)
        # print(name_doc)
         i=i+1
+

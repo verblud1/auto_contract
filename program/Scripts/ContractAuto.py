@@ -6,7 +6,7 @@ from datetime import datetime
 import json
 from pathlib import Path
 
-# найти файл- открыть файл - прочитать файл - прочитать строки и разделить их до ":" и после
+
 # Чистка кода 
 # сделать перевод district and town для названий папок
 # сделать шаблоны школ города
@@ -27,14 +27,10 @@ from pathlib import Path
 # шаблоны по октябряь - ноябрь и ноябрь - декабрь однотипные, поэтому можно делать по единым шаблонам в одной папке, где меняется только даты 
 # возможно, добавить ui
 # добавить файл с зависимостями
-# config в json
-
 
 #variables / find directions to files
 script_dir = os.path.dirname(os.path.abspath(__file__))
 script_dir = Path(__file__).parent
-
-
 parent_dir = script_dir.parent
 
 templates_dir = parent_dir / "templates"
@@ -42,32 +38,53 @@ output_dir = parent_dir.parent / "schools_output"
 
 #other var
 school_type = ""
+type_name_ru=""
 
-    
-#TEST PART
-    #создавать папку в school_output в зависимости от это район или город,
-    #То есть f"{administrative_structure_name} договоры {current_time}"(Район договор 12-09-2025) 
-day_count = 40
-cost_eat = 73.51 
-date = "сентября 2025"
-date_conclusion = "с 1 сентября 2025 года по 31 октября 2025 года"
+day_count = 0
+cost_eat = 0 
+date = ""
+date_conclusion = ""
+
+#read values from txt file
+values_file_path = parent_dir.parent / 'common_values.txt'
+# Проверка существования файла
+if not os.path.exists(values_file_path):
+    print(f"Файл {values_file_path} не найден!")
+else:
+    # Открытие файла
+    with open(values_file_path, 'r', encoding='utf-8') as file:
+        # Чтение построчно
+        for line in file:
+            line = line.strip()  # Удаляем пробелы и переносы строк
+            
+            # Разделяем строку по двоеточию
+            if ':' in line:
+                
+                part_after_colon = line.split(':', 1)[1].strip()
+                part_before_colon = line.split(':',1)[0].strip()
+                
+                if part_before_colon == "Стоимость дня":
+                    cost_eat = float(part_after_colon)
+                if part_before_colon == "Кол-во дней":
+                    day_count = int(part_after_colon)
+                if part_before_colon == "Дата":
+                    date = part_after_colon
+                if part_before_colon == "Дата заключения договора":
+                    date_conclusion = part_after_colon
+
+            else:
+                # Обработка строк без двоеточия
+                print(f"Строка без двоеточия: {line}")
 
 
+#answer for user about school type
 school_type_answer = int(input("район или город? (1/2): "))
 if school_type_answer == 1:
     school_type = "district"
+    type_name_ru = "Район"
 else:
     school_type = "town"
-
-
-#вынести в txt
-#day_count = int(input("кол-во дней: "))
-#cost_eat = float(input("стоимость дня: "))
-#date = str(input("дата: "))
-
-#concl_date_one_part = str(input("С какого числа и года? (в род падеже)"))
-#concl_date_two_part = str(input("По какое число и год?(в род падеже)"))
-#date_conclusion =  f"с {concl_date_one_part} по {concl_date_two_part}"
+    type_name_ru = "Город"
 
 
 #open json
@@ -102,13 +119,27 @@ def number_to_words(value):
     
 
 #date
-current_time = datetime.now().strftime("%Y-%m-%d")
+current_time = datetime.now().strftime("%Y.%m.%d ( %H:%M )")
 
 #create a new folder in school_output
-new_output_folder_name = f"{school_type} договоры от {current_time}"
+new_output_folder_name = f"{type_name_ru} договоры от {current_time}"
 folder_output = output_dir / new_output_folder_name
-folder_output.mkdir(parents=True, exist_ok=True)
-    
+try:
+    folder_output.mkdir(parents=True, exist_ok=True) #поменять exist на True чтобы обрабатывать исключения при создании уже существующей папки
+except:
+    try:
+        rewrite_dir = str(input("Папка уже существует. Старая будет перезаписана? (да / нет) ")).strip().lower()
+        if rewrite_dir == "да":
+            pass
+        if rewrite_dir == "нет":
+            #добавляем к названию папки (1)
+            print("Программа завершена без создания директории")
+            sys.exit()
+        else:
+            print("Кажется, что-то пошло не так. Попробуйте еще раз")
+    except:
+        print("Кажется, что-то пошло не так. Попробуйте еще раз")
+
 i=0
 for school in schools_data[0]["schools"][school_type]:
 
