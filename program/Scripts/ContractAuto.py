@@ -1,19 +1,20 @@
 from docxtpl import DocxTemplate
 from num2words import num2words
 from datetime import datetime
+#from decimal import Decimal
 from pathlib import Path
 import json
 import sys
 import os 
 
+# можно сделать отдельную функцию которая будет получать цифру рублей и выдвавать правильное написание "рублей" "рубля" "рубль"
+# дата склонения
+# чтобы копейк в соимости дня в общей сумме и
 # когда копейки в стоимости дня такие как 73.50 74.600 то есть ровно десятки проч делать так чтобы не 73.5 а 75.50 
-# Чистка кода 
 # сделать шаблоны школ города
 # перезапись старых решений с запросом этого у юзера
 # try except 
 # СКЛОНЕНИЯ ДЛЯ РУБЛЕЙ
-# проверить работу с датами ноябрь-декабрь
-# сделать русские названия выводных папок
 # добавить шаблоны городских школ
 # добавить обработчики ошибок
 # exe file from script
@@ -23,7 +24,6 @@ import os
 # добавить возможность очистки папки вывода от старых решений
 # шаблоны для школ
 # чтобы прога была вроде exe и можно было бы скачать с гитхаба
-# шаблоны по октябряь - ноябрь и ноябрь - декабрь однотипные, поэтому можно делать по единым шаблонам в одной папке, где меняется только даты 
 # возможно, добавить ui
 # добавить файл с зависимостями
 
@@ -37,7 +37,7 @@ output_dir = parent_dir.parent / "schools_output"
 
 #other var
 school_type = ""
-type_name_ru=""
+type_name_ru = ""
 
 day_count = 0
 cost_eat = 0 
@@ -101,22 +101,38 @@ for schools in schools_data[0]["schools"][school_type]:
     schools["child_count"] = get_childs_count_from_user
     i=i+1
     
-#мб в другой файл
+
 def number_to_words(value):
     #должны быть сделаны окончания и проверка на полное число или же отсутсвие копеек другими словами, также прибавленеи нуля в конце, если копейка меньше 10
-    
+    #копейки сбиваются число и получается что коп и числ меняются местами т е коп 5
     parts = str(value).split('.')
     rubles = int(parts[0])
-    kopecks = int(parts[1]) if len(parts) > 1 else 0
+    kopecks = int(parts[1]) if len(parts) > 1 else 0 #форматирование копеек(добавление нуля)
     
-    rubles_words = num2words(rubles, lang='ru') + ' рублей'
-    kopecks_words = f" {kopecks} копеек"
+    declension_ruble_word=""
+    declension_kopecks_word=""
+    if rubles % 10 == 1:
+        declension_ruble_word = "рубль"
+    if rubles % 10 >= 2 <= 4:
+        declension_ruble_word = "рубля"
+    if rubles % 10 == 0 > 4:
+        declension_ruble_word = "рублей"
+
+    if kopecks % 10 == 1:
+        declension_kopecks_word = "копейка"
+    if kopecks % 10 >= 2 <= 4:
+        declension_kopecks_word = "копейки"
+    if kopecks % 10 == 0 > 4:
+        declension_kopecks_word = "копеек"
+
+
+    rubles_words = num2words(rubles, lang='ru') + f" {declension_ruble_word}"
+    kopecks_words = f" {kopecks}0 {declension_kopecks_word}"
     
     return rubles_words + kopecks_words
     
     
-
-#date
+#date (year month day hour minutes)
 current_time = datetime.now().strftime("%Y.%m.%d ( %H:%M )")
 
 #create a new folder in school_output
@@ -125,6 +141,7 @@ folder_output = output_dir / new_output_folder_name
 try:
     folder_output.mkdir(parents=True, exist_ok=True) #поменять exist на True чтобы обрабатывать исключения при создании уже существующей папки
 except:
+    #test part
     try:
         rewrite_dir = str(input("Папка уже существует. Старая будет перезаписана? (да / нет) ")).strip().lower()
         if rewrite_dir == "да":
@@ -160,8 +177,8 @@ for school in schools_data[0]["schools"][school_type]:
             
         'child_count': school["child_count"], 
         'day_count': day_count,
-        'cost_eat': cost_eat, 
-        'count_money': count_money,
+        'cost_eat': format(cost_eat,'.2f'), #всегда есть 00 после целого числа то есть всегда float
+        'count_money': format(count_money,'.2f'), #всегда есть 00 после целого числа то есть всегда float
         'decoding_number_words': decoding_number_words, 
         'date': date,
         'date_conclusion': date_conclusion

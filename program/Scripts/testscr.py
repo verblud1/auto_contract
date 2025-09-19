@@ -1,6 +1,7 @@
 import json
 import os
 from pathlib import Path
+from decimal import Decimal
 
 script_dir = Path(__file__).parent
 parent_dir = script_dir.parent
@@ -14,6 +15,11 @@ with open(odir) as file:
 date_conclusion=""
 values_file_path = parent_dir.parent / 'common_values.txt'
 
+d=Decimal(float(73.50))
+formatted_price = format(d, '.2f')
+def format_number(num):
+    return f"{num:.2f}".rstrip('0').rstrip('.') if num % 1 else int(num)
+print(formatted_price)
 # Проверка существования файла
 if not os.path.exists(values_file_path):
     print(f"Файл {values_file_path} не найден!")
