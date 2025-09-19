@@ -7,6 +7,8 @@ import json
 import sys
 import os 
 
+# неправильно выдаются копейки
+# неправильные склонения для копеек
 # можно сделать отдельную функцию которая будет получать цифру рублей и выдвавать правильное написание "рублей" "рубля" "рубль"
 # дата склонения
 # чтобы копейк в соимости дня в общей сумме и
@@ -127,7 +129,7 @@ def number_to_words(value):
 
 
     rubles_words = num2words(rubles, lang='ru') + f" {declension_ruble_word}"
-    kopecks_words = f" {kopecks}0 {declension_kopecks_word}"
+    kopecks_words = f" {kopecks}0 {declension_kopecks_word}" #неправильно выдаются копейки
     
     return rubles_words + kopecks_words
     
