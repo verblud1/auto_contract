@@ -1,31 +1,18 @@
 from docxtpl import DocxTemplate
 from num2words import num2words
 from datetime import datetime
-#from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 import json
 import sys
 import os 
 
-# рубли неправильно пишутся в стоимости дня 
-# неправильно выдаются копейки
-# неправильные склонения для копеек
-# можно сделать отдельную функцию которая будет получать цифру рублей и выдвавать правильное написание "рублей" "рубля" "рубль"
-# дата склонения
-# чтобы копейк в соимости дня в общей сумме и
-# когда копейки в стоимости дня такие как 73.50 74.600 то есть ровно десятки проч делать так чтобы не 73.5 а 75.50 
-# сделать шаблоны школ города
-# перезапись старых решений с запросом этого у юзера
-# try except 
-# СКЛОНЕНИЯ ДЛЯ РУБЛЕЙ
-# добавить шаблоны городских школ
+# дата склон
 # добавить обработчики ошибок
-# exe file from script
 # добавить склонения для денег
-# копейки от 6
 # точка в файле меняется на запятую
+# добавить проверку try except 
 # добавить возможность очистки папки вывода от старых решений
-# шаблоны для школ
 # чтобы прога была вроде exe и можно было бы скачать с гитхаба
 # возможно, добавить ui
 # добавить файл с зависимостями
@@ -105,23 +92,22 @@ for schools in schools_data[0]["schools"][school_type]:
     i=i+1
     
 def Currency_Word(rubles,kopecks):
-    declension_ruble_word=""
-    declension_kopecks_word=""
-    if rubles % 10 == 1:
+    # Проверка для рублей
+    if rubles % 10 == 1 and rubles % 100 != 11:
         declension_ruble_word = "рубль"
-    if rubles % 10 >= 2 <= 4:
+    elif 2 <= rubles % 10 <= 4 and (rubles % 100 < 10 or rubles % 100 >= 20):
         declension_ruble_word = "рубля"
-    if rubles % 10 == 0 >= 5:
+    else:
         declension_ruble_word = "рублей"
 
-    if kopecks % 10 == 1:
+    # Проверка для копеек
+    if kopecks % 10 == 1 and kopecks % 100 != 11:
         declension_kopecks_word = "копейка"
-    if kopecks % 10 >= 2 <= 4:
+    elif 2 <= kopecks % 10 <= 4 and (kopecks % 100 < 10 or kopecks % 100 >= 20):
         declension_kopecks_word = "копейки"
-    if kopecks % 10 >= 5:
+    else:
         declension_kopecks_word = "копеек"
-    if kopecks % 10 == 0:
-        declension_kopecks_word = "копеек"
+
     return declension_ruble_word, declension_kopecks_word
 
 def number_to_words(value):
@@ -129,7 +115,7 @@ def number_to_words(value):
     #копейки сбиваются число и получается что коп и числ меняются местами т е коп 5
     parts = str(value).split('.')
     rubles = int(parts[0])
-    #
+    
     # Обрабатываем копейки, добавляем ведущий ноль если нужно
     if len(parts) > 1:
         kopecks_str = parts[1]
@@ -154,7 +140,7 @@ def number_to_words(value):
 #date (year month day hour minutes)
 current_time = datetime.now().strftime("%Y.%m.%d ( %H:%M )")
 
-#create a new folder in school_output
+#create a new folder in school_output(dont work now)
 new_output_folder_name = f"{type_name_ru} договоры от {current_time}"
 folder_output = output_dir / new_output_folder_name
 try:
@@ -184,7 +170,15 @@ for school in schools_data[0]["schools"][school_type]:
     # Загрузка шаблона
     doc = DocxTemplate(template_path)
 
-    count_money = cost_eat * day_count * school['child_count']
+    #here using decimal for accurate calculations
+    cost_eat_decimal = Decimal(str(cost_eat))
+    day_count_decimal = Decimal(str(day_count))
+    child_count_decimal = Decimal(str(school['child_count']))
+
+    count_money = cost_eat_decimal * day_count_decimal * child_count_decimal
+    # Округляем до 2 знаков после запятой
+    count_money = count_money.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+    
     decoding_number_words = number_to_words(count_money) 
 
         
