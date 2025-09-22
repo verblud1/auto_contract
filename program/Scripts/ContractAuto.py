@@ -7,6 +7,7 @@ import json
 import sys
 import os 
 
+# рубли неправильно пишутся в стоимости дня 
 # неправильно выдаются копейки
 # неправильные склонения для копеек
 # можно сделать отдельную функцию которая будет получать цифру рублей и выдвавать правильное написание "рублей" "рубля" "рубль"
@@ -103,37 +104,53 @@ for schools in schools_data[0]["schools"][school_type]:
     schools["child_count"] = get_childs_count_from_user
     i=i+1
     
-
-def number_to_words(value):
-    #должны быть сделаны окончания и проверка на полное число или же отсутсвие копеек другими словами, также прибавленеи нуля в конце, если копейка меньше 10
-    #копейки сбиваются число и получается что коп и числ меняются местами т е коп 5
-    parts = str(value).split('.')
-    rubles = int(parts[0])
-    kopecks = int(parts[1]) if len(parts) > 1 else 0 #форматирование копеек(добавление нуля)
-    
+def Currency_Word(rubles,kopecks):
     declension_ruble_word=""
     declension_kopecks_word=""
     if rubles % 10 == 1:
         declension_ruble_word = "рубль"
     if rubles % 10 >= 2 <= 4:
         declension_ruble_word = "рубля"
-    if rubles % 10 == 0 > 4:
+    if rubles % 10 == 0 >= 5:
         declension_ruble_word = "рублей"
 
     if kopecks % 10 == 1:
         declension_kopecks_word = "копейка"
     if kopecks % 10 >= 2 <= 4:
         declension_kopecks_word = "копейки"
-    if kopecks % 10 == 0 > 4:
+    if kopecks % 10 >= 5:
         declension_kopecks_word = "копеек"
+    if kopecks % 10 == 0:
+        declension_kopecks_word = "копеек"
+    return declension_ruble_word, declension_kopecks_word
 
+def number_to_words(value):
+    #должны быть сделаны окончания и проверка на полное число или же отсутсвие копеек другими словами, также прибавленеи нуля в конце, если копейка меньше 10
+    #копейки сбиваются число и получается что коп и числ меняются местами т е коп 5
+    parts = str(value).split('.')
+    rubles = int(parts[0])
+
+    # Обрабатываем копейки, добавляем ведущий ноль если нужно
+    if len(parts) > 1:
+        kopecks_str = parts[1]
+        # Добавляем ведущий ноль, если копеек меньше 10
+        if len(kopecks_str) == 1:
+            kopecks_str += '0'
+        kopecks = int(kopecks_str)
+    else:
+        kopecks = 0 
+ 
+    declension_ruble_word, declension_kopecks_word = Currency_Word(rubles,kopecks)
 
     rubles_words = num2words(rubles, lang='ru') + f" {declension_ruble_word}"
-    kopecks_words = f" {kopecks}0 {declension_kopecks_word}" #неправильно выдаются копейки
+    # Форматируем копейки (добавляем ведущий ноль при необходимости)
+    kopecks_formatted = f"{kopecks:02d}"  # Форматируем к двузначному числу
+    kopecks_words = f" {kopecks_formatted} {declension_kopecks_word}"
     
     return rubles_words + kopecks_words
     
-    
+
+
 #date (year month day hour minutes)
 current_time = datetime.now().strftime("%Y.%m.%d ( %H:%M )")
 
