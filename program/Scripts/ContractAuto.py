@@ -129,7 +129,7 @@ def number_to_words(value):
     #копейки сбиваются число и получается что коп и числ меняются местами т е коп 5
     parts = str(value).split('.')
     rubles = int(parts[0])
-
+    #
     # Обрабатываем копейки, добавляем ведущий ноль если нужно
     if len(parts) > 1:
         kopecks_str = parts[1]
