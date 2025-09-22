@@ -8,6 +8,7 @@ import sys
 import os 
 
 # дата склон
+# допники добавить(создание отдельных договоров)
 # добавить обработчики ошибок
 # добавить склонения для денег
 # точка в файле меняется на запятую
@@ -109,6 +110,9 @@ def Currency_Word(rubles,kopecks):
         declension_kopecks_word = "копеек"
 
     return declension_ruble_word, declension_kopecks_word
+
+def Additional_Agreement():
+    pass
 
 def number_to_words(value):
     #должны быть сделаны окончания и проверка на полное число или же отсутсвие копеек другими словами, также прибавленеи нуля в конце, если копейка меньше 10
