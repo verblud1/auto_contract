@@ -3,14 +3,14 @@ from tkinter import messagebox
 
 # Настройка внешнего вида
 ctk.set_appearance_mode("System")  # Режим: "Light", "Dark" или "System"
-ctk.set_default_color_theme("blue")  # Темы: "blue", "green", "dark-blue"
+ctk.set_default_color_theme("green")  # Темы: "blue", "green", "dark-blue"
 
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         
         # Настройка основного окна
-        self.title("Мое приложение на CustomTkinter")
+        self.title("Авто Договор")
         self.geometry("600x400")
         
         # Создание виджетов

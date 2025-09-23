@@ -88,7 +88,46 @@
                     "id":11,
                     "type": "district",
                     "name": "Академическая",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 19,
+
+                    "school_full_name": "Академическая средняя общеобразовательная школа",
+                    "school_short_name": "Академическая СОШ",
+
+                    "director_full_name": "Куракиной Ольги Алексеевны",
+                    "director_short_name": "О.А. Куракина",
+                    
+                    "postal_code": 171105,
+                    "full_location_school": "Тверская область, Вышневолоцкий район, п. Академический, ул. Октябрьская, д.19А",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ0280",
+                            "INN": "6920006572 / КПП692001001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 72
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОКТМО",
+                                    "value": 28714000
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 40736490
+                                }
+                            ]
+                        }
+
+                    ]
+                    
                 },
                 
                 {
@@ -103,6 +142,8 @@
                     "type": "district",
                     "name": "Горняцкая",
                     "child_count": 0
+
+                    
                 },
                 
                 {

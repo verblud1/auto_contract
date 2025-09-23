@@ -7,6 +7,14 @@ import json
 import sys
 import os 
 
+# добавить комментарии
+# new templates -> change config -> OOP -> UI -> ADDITIONAL contr FUNC
+# в счете вставлять всю инфу из конфига в определнном месте где указываеся окпэы огрн и проч все вместе и все это выводится с названяими и проч
+# шаблон должен быть один
+# проверка если строка пустая, то ничего не писать и убирать строку полностью
+# казначейский счет строку оставить пустой если у школы казначейский счет: "" и не писать строку "Казначейский счет"
+# в каждой школе в конфиге значения имени директоров названия школ полные номера договоров и прочее что нестатично
+# переход на класс
 # дата склон
 # допники добавить(создание отдельных договоров)
 # добавить обработчики ошибок
@@ -34,6 +42,7 @@ day_count = 0
 cost_eat = 0 
 date = ""
 date_conclusion = ""
+year = ""
 
 #read values from txt file
 values_file_path = parent_dir.parent / 'common_values.txt'
@@ -61,6 +70,8 @@ else:
                     date = part_after_colon
                 if part_before_colon == "Дата заключения договора":
                     date_conclusion = part_after_colon
+                if part_before_colon == "Год":
+                    year = part_after_colon
 
             else:
                 # Обработка строк без двоеточия
@@ -110,9 +121,6 @@ def Currency_Word(rubles,kopecks):
         declension_kopecks_word = "копеек"
 
     return declension_ruble_word, declension_kopecks_word
-
-def Additional_Agreement():
-    pass
 
 def number_to_words(value):
     #должны быть сделаны окончания и проверка на полное число или же отсутсвие копеек другими словами, также прибавленеи нуля в конце, если копейка меньше 10
@@ -169,11 +177,12 @@ for school in schools_data[0]["schools"][school_type]:
 
     print(f"id: {school['id']}")
 
-    template_path = templates_dir / school_type / f"{school['name']}.docx"
+    template_path = templates_dir / "contracts" / "contract_template.docx"
 
     # Загрузка шаблона
     doc = DocxTemplate(template_path)
 
+    #считаем
     #here using decimal for accurate calculations
     cost_eat_decimal = Decimal(str(cost_eat))
     day_count_decimal = Decimal(str(day_count))
@@ -185,10 +194,22 @@ for school in schools_data[0]["schools"][school_type]:
     
     decoding_number_words = number_to_words(count_money) 
 
-        
+    #название для договора
     name_doc = f"{school['name']} договор от {current_time}"
 
-        
+    #variables context
+    year = year
+    contract_number = school['contract_number']
+    school_full_name = school['school_full_name'] 
+    school_short_name = school['school_short_name'] 
+    director_full_name = school['director_full_name'] 
+    director_short_name = school['director_short_name']
+    postal_code = school['postal_code']
+    full_location_school = school['full_location_school']
+    #personal_account = school['bank_account_info']['personal_account']
+    #INN = school['bank_account_info']['INN']
+    #classification_info = school['']
+
     # Создание контекста для подстановки (переменные в документе)
     context = {
             
@@ -198,7 +219,19 @@ for school in schools_data[0]["schools"][school_type]:
         'count_money': format(count_money,'.2f'), #всегда есть 00 после целого числа то есть всегда float
         'decoding_number_words': decoding_number_words, 
         'date': date,
-        'date_conclusion': date_conclusion
+        'date_conclusion': date_conclusion,
+        
+        'year': year,
+        'contract_number': contract_number,
+        'school_full_name': school_full_name,
+        'school_short_name': school_short_name,
+        'director_full_name': director_full_name,
+        'director_short_name': director_short_name,
+        'postal_code':  postal_code,
+        'full_location_school': full_location_school,
+        #'personal_account': personal_account,
+        #'INN': INN,
+        #'classification_info': classification_info
 
         }
 

@@ -9,6 +9,7 @@ parent_dir = script_dir.parent
 odir = parent_dir / "data" / "config.json"
 folder = "/config.json"
 
+
 with open(odir) as file:
     schools_data = json.load(file)
 
@@ -48,8 +49,11 @@ else:
 #print(schools_data[0])
 school_type='district'
 i=0
+print(schools_data[0]["schools"][school_type][0]['type'])#['bank_account_info'][0]['personal_account'])
 for school in schools_data[0]["schools"][school_type]:
-        print(school["id"])
+        #personal_account = school['bank_account_info'][0]['personal_account'] #['bank_account_info']['personal_account']
+        #print(personal_account)
+        print(school)
         #print(f"ключ: {имя школы}")
         #print("name:", f"{school['schools'][school_type][i]['name']}.docx")
          
@@ -60,5 +64,6 @@ for school in schools_data[0]["schools"][school_type]:
        # name_doc = f"{school['schools'][school_type][i]['name']} договор от 12.09"
       #  print(count_money)
        # print(name_doc)
-        i=i+1
+        i=i+1 
+
 
