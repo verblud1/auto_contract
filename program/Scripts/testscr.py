@@ -45,21 +45,35 @@ else:
                 # Обработка строк без двоеточия
                 print(f"Строка без двоеточия: {line}")
 
+school_type='town'
+#3#3#@#33№№№def bi(integ):
+    
+    #return ready
 
 #print(schools_data[0])
-school_type='district'
+
 i=0
 print(schools_data[0]["schools"][school_type][0]['type'])#['bank_account_info'][0]['personal_account'])
 for school in schools_data[0]["schools"][school_type]:
         #personal_account = school['bank_account_info'][0]['personal_account'] #['bank_account_info']['personal_account']
         #print(personal_account)
-        print(school)
+        #print(school['bank_account_info'][0]['personal_account'])
         #print(f"ключ: {имя школы}")
         #print("name:", f"{school['schools'][school_type][i]['name']}.docx")
-         
+        print(school['name'])
+        
         #count_money = school['schools'][school_type][i]['child_count']
+        #lines = []
         
-        
+            
+            #line = f"{info['name']}: {info['value']}"
+            #lines.append(line)
+        #print(lines)
+        classification_info_text = "\n".join(
+            f"{info['name']}: {info['value']}"
+            for info in school['bank_account_info'][0]['classification_info']
+        )
+        print(result_text)
         
        # name_doc = f"{school['schools'][school_type][i]['name']} договор от 12.09"
       #  print(count_money)

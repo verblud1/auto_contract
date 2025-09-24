@@ -3,17 +3,15 @@ from num2words import num2words
 from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
+import locale
 import json
 import sys
 import os 
 
+# сделать чтобы у пользователя запрашивалось по каждой школе про обучающихся с 1-5, c 5-11 классы то есть по классам чтобы пользователь вводил а потом все это суммировалось. в итоге вместо child_count в конфиге будут по классам в каждой школе
+# в будущем добавить возможность добавлять школы из интерфейса
 # добавить комментарии
-# new templates -> change config -> OOP -> UI -> ADDITIONAL contr FUNC
-# в счете вставлять всю инфу из конфига в определнном месте где указываеся окпэы огрн и проч все вместе и все это выводится с названяими и проч
-# шаблон должен быть один
-# проверка если строка пустая, то ничего не писать и убирать строку полностью
-# казначейский счет строку оставить пустой если у школы казначейский счет: "" и не писать строку "Казначейский счет"
-# в каждой школе в конфиге значения имени директоров названия школ полные номера договоров и прочее что нестатично
+# new templates -> change config -> classification_info func -> OOP -> UI -> ADDITIONAL contr FUNC
 # переход на класс
 # дата склон
 # допники добавить(создание отдельных договоров)
@@ -43,6 +41,10 @@ cost_eat = 0
 date = ""
 date_conclusion = ""
 year = ""
+
+# Устанавливаем русскую локаль для корректного форматирования чисел
+locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
+
 
 #read values from txt file
 values_file_path = parent_dir.parent / 'common_values.txt'
@@ -172,6 +174,7 @@ except:
     except:
         print("Кажется, что-то пошло не так. Попробуйте еще раз")
 
+
 i=0
 for school in schools_data[0]["schools"][school_type]:
 
@@ -192,11 +195,18 @@ for school in schools_data[0]["schools"][school_type]:
     # Округляем до 2 знаков после запятой
     count_money = count_money.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
     
+    # Преобразование подсчитанного значения в текст
     decoding_number_words = number_to_words(count_money) 
 
     #название для договора
     name_doc = f"{school['name']} договор от {current_time}"
 
+    # отображение всех классификаторов деятельности школ из конфига в инфе счета в документе
+    classification_info_text = "\n".join(
+            f"{info['name']}: {info['value']}"
+            for info in school['bank_account_info'][0]['classification_info']
+        )
+    
     #variables context
     year = year
     contract_number = school['contract_number']
@@ -206,17 +216,17 @@ for school in schools_data[0]["schools"][school_type]:
     director_short_name = school['director_short_name']
     postal_code = school['postal_code']
     full_location_school = school['full_location_school']
-    #personal_account = school['bank_account_info']['personal_account']
-    #INN = school['bank_account_info']['INN']
-    #classification_info = school['']
+    personal_account = school['bank_account_info'][0]['personal_account']
+    INN = school['bank_account_info'][0]['INN']
+    classification_info = classification_info_text
 
     # Создание контекста для подстановки (переменные в документе)
     context = {
             
         'child_count': school["child_count"], 
         'day_count': day_count,
-        'cost_eat': format(cost_eat,'.2f'), #всегда есть 00 после целого числа то есть всегда float
-        'count_money': format(count_money,'.2f'), #всегда есть 00 после целого числа то есть всегда float
+        'cost_eat': locale.format_string('%.2f', cost_eat, grouping=True), #всегда есть 00 после целого числа то есть всегда float
+        'count_money': locale.format_string('%.2f', float(count_money), grouping=True), #всегда есть 00 после целого числа то есть всегда float
         'decoding_number_words': decoding_number_words, 
         'date': date,
         'date_conclusion': date_conclusion,
@@ -229,9 +239,9 @@ for school in schools_data[0]["schools"][school_type]:
         'director_short_name': director_short_name,
         'postal_code':  postal_code,
         'full_location_school': full_location_school,
-        #'personal_account': personal_account,
-        #'INN': INN,
-        #'classification_info': classification_info
+        'personal_account': personal_account,
+        'INN': INN,
+        'classification_info': classification_info
 
         }
 

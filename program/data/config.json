@@ -7,77 +7,451 @@
                     "id":0,
                     "type": "town",
                     "name": "3 СОШ",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 18,
+
+                    "school_full_name": "Средняя общеобразовательная школа № 3",
+                    "school_short_name": "СОШ № 3",
+
+                    "director_full_name": "Сенькив Нины Александровны",
+                    "director_short_name": "Н.А. Сенькив",
+                    
+                    "postal_code": 171161,
+                    "full_location_school": "Тверская обл., г. Вышний Волочек, ул. 3-я Пролетарская, д. 50",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ2Щ00",
+                            "INN": "6908006336 / КПП 690801001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 75403
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 54554545
+                                }
+                            ]
+                        }
+
+                    ]
                 },
                 
                 {
                     "id":1,
                     "type": "town",
                     "name": "5 СОШ",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 14,
+
+                    "school_full_name": "Средняя общеобразовательная школа № 5",
+                    "school_short_name": "СОШ № 5",
+
+                    "director_full_name": "Семчевой Юлии Евгеньевны",
+                    "director_short_name": "Ю.Е. Семчева",
+                    
+                    "postal_code": 171163,
+                    "full_location_school": "Тверская область, г. Вышний Волочек,  ул. Екатерининская, д. 22",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ1160",
+                            "INN": "6908005942 / КПП 690801001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 75403
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 54554752
+                                }
+                            ]
+                        }
+
+                    ]
                 },
                 
                 {
                     "id":2,
                     "type": "town",
                     "name": "6 СОШ",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 21,
+
+                    "school_full_name": "Средняя общеобразовательная школа № 6",
+                    "school_short_name": "СОШ № 6",
+
+                    "director_full_name": "Копылова Евгения Юрьевича",
+                    "director_short_name": "Е.Ю. Копылов",
+                    
+                    "postal_code": 171163,
+                    "full_location_school": "Тверская обл., г. Вышний Волочек, ул. Осташковская, д. 3/7",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ1240",
+                            "INN": "6908006093 / КПП 690801001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 75403
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 54554887
+                                }
+                            ]
+                        }
+
+                    ]
                 },
                 
                 {
                     "id":3,
                     "type": "town",
                     "name": "12 СОШ",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 20,
+
+                    "school_full_name": "Средняя общеобразовательная школа № 12",
+                    "school_short_name": "СОШ № 12",
+
+                    "director_full_name": "Гаврюшиной Любви Сергеевны",
+                    "director_short_name": "Л.С. Гаврюшина",
+                    
+                    "postal_code": 171164,
+                    "full_location_school": "Тверская обл., г. Вышний Волочек, ул. Северная, д.7",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ2940",
+                            "INN": "6908006008 / КПП 690801001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 75403
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 54554835
+                                }
+                            ]
+                        }
+
+                    ]
                 },
                 
                 {
                     "id":4,
                     "type": "town",
                     "name": "19 СОШ",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 16,
+
+                    "school_full_name": "Средняя общеобразовательная школа № 19",
+                    "school_short_name": "СОШ № 19",
+
+                    "director_full_name": "Ворониной Светланы Викторовны",
+                    "director_short_name": "С.В. Воронина",
+                    
+                    "postal_code": 171159,
+                    "full_location_school": "Тверская обл., г. Вышний Волочек, ул. Шмидта, д. 194",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ1200",
+                            "INN": "6908006390 / КПП 690801001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 75403
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 54554545
+                                }
+                            ]
+                        }
+
+                    ]
                 }, 
                 
                 {
                     "id":5,
                     "type": "town",
                     "name": "10 СОШ",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 2,
+
+                    "school_full_name": "Средняя  школа № 10 с углубленным изучением отдельных предметов",
+                    "school_short_name": "СШ № 10",
+
+                    "director_full_name": "Радайкиной Жанны Владимировны",
+                    "director_short_name": "Ж.В. Радайкина",
+                    
+                    "postal_code": 171166,
+                    "full_location_school": "Тверская область, г. Вышний Волочек,  ул. Мира, д.70-б",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ2Ш40",
+                            "INN": "6908005999 / КПП 690801001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 75403
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 54554924
+                                }
+                            ]
+                        }
+
+                    ] 
                 }, 
                 
                 {
                     "id":6,
                     "type": "town",
                     "name": "13 СОШ",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 11,
+
+                    "school_full_name": "Средняя общеобразовательная школа № 13",
+                    "school_short_name": "СОШ № 13",
+
+                    "director_full_name": "Калининой Татьяны Геннадьевны",
+                    "director_short_name": "Т.Г. Калинина",
+                    
+                    "postal_code": 171155,
+                    "full_location_school": "Тверская обл., г. Вышний Волочек, ул. Ямская, д. 259а",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ1140",
+                            "INN": "6908005967 / КПП 690801001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 75403
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 54554841
+                                }
+                            ]
+                        }
+
+                    ]
                 }, 
                 
                 {
                     "id":7,
                     "type": "town",
                     "name": "7 СОШ",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 4,
+
+                    "school_full_name": "Средняя общеобразовательная школа № 7",
+                    "school_short_name": "СОШ № 7",
+
+                    "director_full_name": "Кузьмина Евгения Викторовича",
+                    "director_short_name": "Е.В. Кузьмин",
+                    
+                    "postal_code": 171158,
+                    "full_location_school": "Тверская область, г. Вышний Волочек,  Казанский проспект, д. 98-100",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ1280",
+                            "INN": "6908006150 / КПП 690801001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОГРН",
+                                    "value": 1026901601000
+                                },
+                                {
+                                    "name": "ОКТМО",
+                                    "value": 28512000
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 54554982
+                                }
+                            ]
+                        }
+
+                    ]
                 }, 
             
                 {
                     "id":8,
                     "type": "town",
                     "name": "4 СОШ",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 3,
+
+                    "school_full_name": "Школа № 4",
+                    "school_short_name": "Школа № 4",
+
+                    "director_full_name": "Козловой Ирины Растямовны",
+                    "director_short_name": "И.Р. Козлова",
+                    
+                    "postal_code": 171163,
+                    "full_location_school": "Тверская область, г. Вышний Волочек, Ленинградское шоссе, д. 57",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ2Э20",
+                            "INN": "6908006054 / КПП 690801001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 75403
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.13
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 54554769
+                                }
+                            ]
+                        }
+
+                    ]
                 }, 
                 
                 {
                     "id":9,
                     "type": "town",
                     "name": "Гимназия 2",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 12,
+
+                    "school_full_name": "Гимназия №2",
+                    "school_short_name": "Гимназия № 2",
+
+                    "director_full_name": "Сафроновой Ольги Олеговны",
+                    "director_short_name": "О.О. Сафронова",
+                    
+                    "postal_code": 171163,
+                    "full_location_school": "Тверская область, г. Вышний Волочек, ул. Венецианова, д. 1",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ0780",
+                            "INN": "6908006110 / КПП 690801001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОГРН",
+                                    "value": 1026901604311
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 54554806
+                                }
+                            ]
+                        }
+
+                    ]
                 },
                 
                 {
                     "id":10,
                     "type": "town",
                     "name": "Лицей 15",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 10,
+
+                    "school_full_name": "Лицей № 15",
+                    "school_short_name": "Лицей № 15",
+
+                    "director_full_name": "Вильгань Ларисы Юрьевны",
+                    "director_short_name": "Л.Ю. Вильгань",
+                    
+                    "postal_code": 171158,
+                    "full_location_school": "Тверская обл., г. Вышний Волочек, ул. Вагжанова, д. 30",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ2Щ60",
+                            "INN": "6908006209 / КПП 690801001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 81
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 54554446
+                                }
+                            ]
+                        }
+
+                    ]
                 }
 
             ],
@@ -104,7 +478,7 @@
                     "bank_account_info": [
                         {
                             "personal_account": "20016ZШ0280",
-                            "INN": "6920006572 / КПП692001001",
+                            "INN": "6920006572 / КПП 692001001",
                             
                             "classification_info": [
                                 {
@@ -134,65 +508,417 @@
                     "id":12,
                     "type": "district",
                     "name": "Борисовская",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 1,
+
+                    "school_full_name": "Борисовская средняя общеобразовательная школа",
+                    "school_short_name": "Борисовская СОШ",
+
+                    "director_full_name": "Тараненко Елены Николаевны",
+                    "director_short_name": "Е.Н.Тараненко",
+                    
+                    "postal_code": 171117,
+                    "full_location_school": "Тверская область, Вышневолоцкий район, п. Борисовский, ул. Гагарина, д.1",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ1040",
+                            "INN": "6920006580 / КПП 690801001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 81
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 40736461
+                                }
+                            ]
+                        }
+
+                    ]
                 },
                 
                 {
                     "id":13,
                     "type": "district",
                     "name": "Горняцкая",
-                    "child_count": 0
+                    "child_count": 0,
 
+                    "contract_number": 13,
+
+                    "school_full_name": "Горняцкая средняя общеобразовательная школа",
+                    "school_short_name": "Горняцкая СОШ",
+
+                    "director_full_name": "Вороновой Елены Александровны",
+                    "director_short_name": "Е.А. Воронова",
                     
+                    "postal_code": 171115,
+                    "full_location_school": "Тверская область, Вышневолоцкий район, п. Горняк, ул. Школьная, д. 9",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ0730",
+                            "INN": "6920006607 / КПП 692001001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 72
+                                },
+                                {
+                                    "name": "ОКТМО",
+                                    "value": 28512000
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОГРН",
+                                    "value": 1026901605170
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 40736484
+                                }
+                            ]
+                        }
+
+                    ]
                 },
                 
                 {
                     "id":14,
                     "type": "district",
                     "name": "Дятловская",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 6,
+
+                    "school_full_name": "Дятловская средняя общеобразовательная школа",
+                    "school_short_name": "Дятловская СОШ",
+
+                    "director_full_name": "Дмитриевой Оксаны Олеговны",
+                    "director_short_name": "О.О. Дмитриева",
+                    
+                    "postal_code": 171141,
+                    "full_location_school": "Тверская область, Вышневолоцкий район, д.Дятлово, ул. Школьная, д. 4",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ0760",
+                            "INN": "6920006597 / КПП 692001001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 72
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОГРН",
+                                    "value": 1026901602595
+                                },
+                                {
+                                    "name": "ОКТМО",
+                                    "value": 28512000
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 40736478
+                                }
+                            ]
+                        }
+
+                    ]
                 },
                 
                 {
                     "id":15,
                     "type": "district",
                     "name": "Есиновичская",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 9,
+
+                    "school_full_name": "Есеновичская средняя общеобразовательная школа",
+                    "school_short_name": "Есеновичская СОШ",
+
+                    "director_full_name": "Бойковой Майи Анатольевны",
+                    "director_short_name": "М.А. Бойкова",
+                    
+                    "postal_code": 171133,
+                    "full_location_school": "Тверская область, Вышневолоцкий район, с. Есеновичи, ул. Первомайская, д.2",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ0710",
+                            "INN": "6920006759 / КПП 692001001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 72
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОГРН",
+                                    "value": 1026901601924
+                                },
+                                {
+                                    "name": "ОКТМО",
+                                    "value": 28714000
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 50379312
+                                }
+                            ]
+                        }
+
+                    ]
                 }, 
                 
                 {
                     "id":16,
                     "type": "district",
                     "name": "Зеленогорская",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 7,
+
+                    "school_full_name": "Зеленогорская средняя общеобразовательная школа",
+                    "school_short_name": "Зеленогорская СОШ",
+
+                    "director_full_name": "Корпусовой Юлии Михайловны",
+                    "director_short_name": "Ю.М. Корпусова",
+                    
+                    "postal_code": 171130,
+                    "full_location_school": "Тверская область, Вышневолоцкий район, пос. Зеленогорский, ул. Советская, д.19 а",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ1000",
+                            "INN": "6920006614 / КПП 692001001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 75403
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 54554545
+                                }
+                            ]
+                        }
+
+                    ]
                 }, 
                 
                 {
                     "id":17,
                     "type": "district",
                     "name": "Красномайская",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 17,
+
+                    "school_full_name": "Красномайская средняя общеобразовательная школа имени С.Ф. Ушакова",
+                    "school_short_name": "Красномайская СОШ имени С.Ф. Ушакова",
+
+                    "director_full_name": "Виноградовой Ольги Константиновны",
+                    "director_short_name": "О.К. Виноградова",
+                    
+                    "postal_code": 171121,
+                    "full_location_school": "Тверская область, Вышневолоцкий район, п. Красномайский, ул. Боровая, д. 1А",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ1080",
+                            "INN": "6920006639 / КПП 692001001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 72
+                                },
+                                {
+                                    "name": "ОКФС",
+                                    "value": 14
+                                },
+                                {
+                                    "name": "ОГРН",
+                                    "value": 1026901604927
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОКТМО",
+                                    "value": 28714000
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 40736521
+                                }
+                            ]
+                        }
+
+                    ]
                 }, 
                 
                 {
                     "id":18,
                     "type": "district",
                     "name": "Солнечная",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 8,
+
+                    "school_full_name": "Солнечная средняя общеобразовательная школа",
+                    "school_short_name": "Солнечная СОШ",
+
+                    "director_full_name": "Воробьевой Евгении Константиновны",
+                    "director_short_name": "Е.К. Воробьева",
+                    
+                    "postal_code": 171120,
+                    "full_location_school": "Тверская область, Вышневолоцкий район, п. Солнечный, ул. Молодежная, д.10",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ1060",
+                            "INN": "6920006653 / КПП 692001001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 72
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОКТМО",
+                                    "value": 28714000
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 40736550
+                                }
+                            ]
+                        }
+
+                    ]
                 }, 
                 
                 {
                     "id":19,
                     "type": "district",
                     "name": "Терелесовская",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 15,
+
+                    "school_full_name": "Терелесовская средняя общеобразовательная школа",
+                    "school_short_name": "Терелесовская СОШ",
+
+                    "director_full_name": "Зарудной Елены Михайловны",
+                    "director_short_name": "Е.М. Зарудная",
+                    
+                    "postal_code": 171145,
+                    "full_location_school": "Тверская область, Вышневолоцкий район, п. Терелесовский, ул. Центральная, д.10",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ3050",
+                            "INN": "6920006773 / КПП 692001001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКОПФ",
+                                    "value": 72
+                                },
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОКТМО",
+                                    "value": 28512000
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 40736550
+                                }
+                            ]
+                        }
+
+                    ]
                 }, 
                 
                 {
                     "id":20,
                     "type": "district",
                     "name": "Холохоленская",
-                    "child_count": 0
+                    "child_count": 0,
+
+                    "contract_number": 5,
+
+                    "school_full_name": "Холохоленская средняя общеобразовательная школа",
+                    "school_short_name": "Холохоленская СОШ",
+
+                    "director_full_name": "Аняновой Маргариты Александровны",
+                    "director_short_name": "М.А. Анянова",
+                    
+                    "postal_code": 171111,
+                    "full_location_school": "Тверская область, Вышневолоцкий район, д. Афимьино, ул. Мира, д.8",
+
+                    "bank_account_info": [
+                        {
+                            "personal_account": "20016ZШ2Э40",
+                            "INN": "6920006660 / КПП 692001001",
+                            
+                            "classification_info": [
+                                {
+                                    "name": "ОКВЭД",
+                                    "value": 85.14
+                                },
+                                {
+                                    "name": "ОГРН",
+                                    "value": 1026901601957
+                                },
+                                {
+                                    "name": "ОКТМО",
+                                    "value": 28714000
+                                },
+                                {
+                                    "name": "ОКПО",
+                                    "value": 40736596
+                                }
+                            ]
+                        }
+
+                    ]
                 }
     
             ]
