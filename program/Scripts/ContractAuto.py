@@ -11,21 +11,14 @@ import os
 import customtkinter as ctk
 from tkinter import messagebox
 
-# Настройка внешнего вида
-ctk.set_appearance_mode("System")  # Режим: "Light", "Dark" или "System"
-ctk.set_default_color_theme("green")  # Темы: "blue", "green", "dark-blue"
-
+# сделать сохранения  в конфиг child_count 
 # добавить возможность добалвения в конфиг пользователем для каждой школы()
 # сделать чтобы у пользователя запрашивалось по каждой школе про обучающихся с 1-5, c 5-11 классы то есть по классам чтобы пользователь вводил а потом все это суммировалось. в итоге вместо child_count в конфиге будут по классам в каждой школе
 # в будущем добавить возможность добавлять школы из интерфейса
 # добавить комментарии
 # new templates -> change config -> classification_info func -> OOP -> UI -> ADDITIONAL contr FUNC
-# переход на класс
-# дата склон
 # допники добавить(создание отдельных договоров)
 # добавить обработчики ошибок
-# добавить склонения для денег
-# точка в файле меняется на запятую
 # добавить проверку try except 
 # добавить возможность очистки папки вывода от старых решений
 # чтобы прога была вроде exe и можно было бы скачать с гитхаба
@@ -39,9 +32,8 @@ class ContractAuto_App(ctk.CTk):
         # Настройка основного окна
         self.title("Авто Договор")
         self.geometry("600x400")
-        
-        # Создание виджетов
-        self.create_widgets()
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
 
         #variables / find directions to files
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -55,130 +47,199 @@ class ContractAuto_App(ctk.CTk):
         self.school_type = ""
         self.type_name_ru = ""
 
-        self.day_count = 0
-        self.cost_eat = 0 
-        self.date = ""
-        self.date_conclusion = ""
-        self.year = ""
+        self.common_values = {
+            "cost_eat": ctk.DoubleVar(value=0.0),
+            "day_count": ctk.IntVar(value=0),
+            "date": ctk.StringVar(value=""),
+            "date_conclusion": ctk.StringVar(value=""),
+            "year": ctk.StringVar(value="")
+        }
 
         # Устанавливаем русскую локаль для корректного форматирования чисел
         locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
 
-        self.read_values()
-        self.read_json()
-        self.school_type_answer()
-        self.Set_ChildCount()
-        self.contract_fill()
+        self.create_widgets()
+        self.load_data()
+
 
     def create_widgets(self):
-        # Метка
-        self.label = ctk.CTkLabel(self, 
-                                 text="Добро пожаловать в CustomTkinter!",
-                                 font=ctk.CTkFont(size=16, weight="bold"))
-        self.label.pack(pady=20)
+        # Создание вкладок
+        self.tabview = ctk.CTkTabview(self)
+        self.tabview.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
         
-        # Поле ввода
-        self.entry = ctk.CTkEntry(self, 
-                                 placeholder_text="Введите текст здесь",
-                                 width=300)
-        self.entry.pack(pady=10)
+        # Добавление вкладок
+        self.tabview.add("Общие настройки")
+        self.tabview.add("Школы")
+        self.tabview.add("Генерация")
         
-        # Кнопка
-        self.button = ctk.CTkButton(self, 
-                                   text="Нажми меня",
-                                   command=self.button_callback)
-        self.button.pack(pady=10)
-        
-        # Переключатель тем
-        self.theme_switch = ctk.CTkSwitch(self,
-                                         text="Темная тема",
-                                         command=self.toggle_theme)
-        self.theme_switch.pack(pady=20)
-        
-        # Выпадающий список
-        self.combobox = ctk.CTkComboBox(self,
-                                       values=["Вариант 1", "Вариант 2", "Вариант 3"])
-        self.combobox.pack(pady=10)
-        
-        # Ползунок
-        self.slider = ctk.CTkSlider(self,
-                                   from_=0,
-                                   to=100,
-                                   number_of_steps=10)
-        self.slider.pack(pady=10)
-
-    def button_callback(self):
-        text = self.entry.get()
-        messagebox.showinfo("Уведомление", f"Вы ввели: {text}")
-    
-    def toggle_theme(self):
-        if self.theme_switch.get():
-            ctk.set_appearance_mode("Dark")
-        else:
-            ctk.set_appearance_mode("Light")
+        # Настройка вкладок
+        self.setup_general_tab()
+        self.setup_schools_tab()
+        self.setup_generation_tab()
 
 
 
-    def read_values(self):
+
+    def setup_general_tab(self):
+        tab = self.tabview.tab("Общие настройки")
+        
+        # Поля для общих значений
+        labels = ["Стоимость питания (руб):", "Количество дней:", "Дата:", "Дата заключения:", "Год:"]
+        keys = ["cost_eat", "day_count", "date", "date_conclusion", "year"]
+        
+        for i, (label, key) in enumerate(zip(labels, keys)):
+            ctk.CTkLabel(tab, text=label).grid(row=i, column=0, padx=10, pady=10, sticky="w")
+            entry = ctk.CTkEntry(tab, textvariable = self.common_values[key])
+            entry.grid(row=i, column=1, padx=10, pady=10, sticky="ew")
+
+        # Кнопки загрузки/сохранения
+        btn_frame = ctk.CTkFrame(tab)
+        btn_frame.grid(row=len(labels), column=0, columnspan=2, pady=20)
+        
+        ctk.CTkButton(btn_frame, text="Загрузить из файла", command=self.load_values).pack(side="left", padx=10)
+        ctk.CTkButton(btn_frame, text="Сохранить в файл", command=self.save_values).pack(side="left", padx=10)
+        
+        tab.grid_columnconfigure(1, weight=1)
+
+
+    def setup_schools_tab(self):
+        tab = self.tabview.tab("Школы")
+        tab.grid_columnconfigure(0, weight=1)
+        tab.grid_rowconfigure(1, weight=1)
+        
+        # Выбор типа школ
+        type_frame = ctk.CTkFrame(tab)
+        type_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=10)
+        
+        ctk.CTkLabel(type_frame, text="Тип школ:").pack(side="left", padx=10)
+        ctk.CTkRadioButton(type_frame, text="Город", variable=self.current_school_type, 
+                          value="town", command=self.update_schools_display).pack(side="left", padx=10)
+        ctk.CTkRadioButton(type_frame, text="Район", variable=self.current_school_type, 
+                          value="district", command=self.update_schools_display).pack(side="left", padx=10)
+        
+        # Таблица школ
+        self.schools_table_frame = ctk.CTkScrollableFrame(tab)
+        self.schools_table_frame.grid(row=1, column=0, sticky="nsew", padx=10, pady=10)
+
+
+    # страница генерации договора
+    def setup_generation_tab(self):
+        tab = self.tabview.tab("Генерация")
+        tab.grid_columnconfigure(0, weight=1)
+        
+        # Лог генерации
+        ctk.CTkLabel(tab, text="Лог выполнения:").grid(row=0, column=0, sticky="w", padx=10, pady=5)
+        self.log_text = ctk.CTkTextbox(tab, height=200)
+        self.log_text.grid(row=1, column=0, sticky="nsew", padx=10, pady=5)
+        
+        # Прогресс бар
+        self.progress_bar = ctk.CTkProgressBar(tab)
+        self.progress_bar.grid(row=2, column=0, sticky="ew", padx=10, pady=5)
+        self.progress_bar.set(0)
+        
+        # Кнопка генерации
+        ctk.CTkButton(tab, text="Сгенерировать договоры", command=self.generate_contracts,
+                     fg_color="green", hover_color="dark green").grid(row=3, column=0, pady=20)
+        
+    # обновить отображение школ в зависимости от района или города
+    def update_schools_display(self):
+        # Очистка предыдущего отображения
+        for widget in self.schools_table_frame.winfo_children():
+            widget.destroy()
+      
+        # Заголовки таблицы (без классов)
+        headers = ["Школа", "Кол-во детей"]
+        for i, header in enumerate(headers):
+            ctk.CTkLabel(self.schools_table_frame, text=header, font=ctk.CTkFont(weight="bold")).grid(
+                row=0, column=i, padx=5, pady=5)
+        
+        # Данные школ
+        # получаем данные из конфига
+        schools = self.schools_data[0]["schools"][self.current_school_type.get()]
+        for row, school in enumerate(schools, 1):
+            # Название школы
+            ctk.CTkLabel(self.schools_table_frame, text=school['name']).grid(
+                row=row, column=0, padx=5, pady=5)
+            
+            # Поля для ввода количества детей
+            school_var = ctk.IntVar(value=school.get('primary_count', 0))
+            
+            school_entry = ctk.CTkEntry(self.schools_table_frame, textvariable=school_var, width=80)
+            school_entry.grid(row=row, column=1, padx=5, pady=5)
+            # Передаем школу и значение через lambda
+            school_entry.bind('<KeyRelease>', 
+                lambda event, s=school, var=school_var: self.Set_childCount(s, var.get()))
+            
+            
+    def load_data(self):
         #read values from txt file
-        values_file_path = self.parent_dir.parent / 'common_values.txt'
-        
-        # Проверка существования файла
-        if not os.path.exists(values_file_path):
-            print(f"Файл {values_file_path} не найден!")
-        else:
-
-            # Открытие файла
-            with open(values_file_path, 'r', encoding='utf-8') as file:
+        try:
+            values_file_path = self.parent_dir.parent / 'common_values.txt'
             
-                # Чтение построчно
-                for line in file:
+            # Проверка существования файла
+            if not os.path.exists(values_file_path):
+                print(f"Файл {values_file_path} не найден!")
+            else:
 
-                    line = line.strip()  # Удаляем пробелы и переносы строк
+                # Открытие файла
+                with open(values_file_path, 'r', encoding='utf-8') as file:
+                
+                    # Чтение построчно
+                    for line in file:
+                        if ':' in line:
+                    
+                            key, value = line.split(':', 1)
+                            key = key.strip()
+                            value = value.strip()
+                                
+                            if key == "Стоимость дня":
+                                self.common_values["cost_eat"].set(float(value))
+                            elif key == "Кол-во дней":
+                                self.common_values["day_count"].set(int(value))
+                            elif key == "Дата":
+                                self.common_values["date"].set(value)
+                            elif key == "Дата заключения договора":
+                                self.common_values["date_conclusion"].set(value)
+                            elif key == "Год":
+                                self.common_values["year"].set(value)
+
+                # Загрузка конфига школ
+                config_file = self.parent_dir / "data" / "config.json"
+                if config_file.exists():
+                    with open(config_file, 'r', encoding='utf-8') as f:
+                        self.schools_data = json.load(f)
+                    
+                    self.update_schools_display()
+
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Ошибка загрузки данных: {str(e)}")
+
+    def load_values(self):
+        """Загрузка значений из файла"""
+        self.load_data()
+        messagebox.showinfo("Успех", "Данные загружены!")
+
+    def save_values(self):
+        """Сохранение значений в файл"""
+        try:
+            # Сохранение common_values
+            values_file = self.parent_dir.parent / 'common_values.txt'
+            with open(values_file, 'w', encoding='utf-8') as f:
+                f.write(f"Стоимость дня: {self.common_values['cost_eat'].get()}\n")
+                f.write(f"Кол-во дней: {self.common_values['day_count'].get()}\n")
+                f.write(f"Дата: {self.common_values['date'].get()}\n")
+                f.write(f"Дата заключения договора: {self.common_values['date_conclusion'].get()}\n")
+                f.write(f"Год: {self.common_values['year'].get()}\n")
             
-                    # Разделяем строку по двоеточию и проверяем на существование двоеточия
-                    if ':' in line:
-                
-                        part_after_colon = line.split(':', 1)[1].strip()
-                        part_before_colon = line.split(':',1)[0].strip()
-                
-                        if part_before_colon == "Стоимость дня":
-                            self.cost_eat = float(part_after_colon)
-                        if part_before_colon == "Кол-во дней":
-                            self.day_count = int(part_after_colon)
-                        if part_before_colon == "Дата":
-                            self.date = part_after_colon
-                        if part_before_colon == "Дата заключения договора":
-                            self.date_conclusion = part_after_colon
-                        if part_before_colon == "Год":
-                            self.year = part_after_colon
+            messagebox.showinfo("Успех", "Данные сохранены!")
+            
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Ошибка сохранения: {str(e)}")
 
-                    else:
-
-                        # Обработка строк без двоеточия
-                        print(f"Строка без двоеточия: {line}")
+    
 
 
-    def read_json(self):
-        #open json
-        folder_config_dir = self.parent_dir / "data" / "config.json"
-
-        with open(folder_config_dir) as file:
-            self.schools_data = json.load(file)
-
-
-    def school_type_answer(self):
-        #answer for user about school type
-        school_type_answer = int(input("район или город? (1/2): "))
-        if school_type_answer == 1:
-            self.school_type = "district"
-            self.type_name_ru = "Район"
-        else:
-            self.school_type = "town"
-            self.type_name_ru = "Город"
-
-
-    def Set_ChildCount(self):
+    def Set_ChildCount(self,value):
         #задаем кол-во детей
         i=0
         for schools in self.schools_data[0]["schools"][self.school_type]:
@@ -234,110 +295,124 @@ class ContractAuto_App(ctk.CTk):
         return rubles_words + kopecks_words
     
 
-    def contract_fill(self):
-        #date (year month day hour minutes)
-        current_time = datetime.now().strftime("%Y.%m.%d ( %H:%M )")
-
-        #create a new folder in school_output(dont work now)
-        new_output_folder_name = f"{self.type_name_ru} договоры от {current_time}"
-        folder_output = self.output_dir / new_output_folder_name
+    def generate_contract(self):
+        """Генерация договоров"""
         try:
-            folder_output.mkdir(parents=True, exist_ok=True) #поменять exist на True чтобы обрабатывать исключения при создании уже существующей папки
-        except:
-            #test part
+            self.log_text.delete("1.0", "end")
+            self.log_text.insert("end", "Начало генерации договоров...\n")
+
+            #date (year month day hour minutes)
+            current_time = datetime.now().strftime("%Y.%m.%d ( %H:%M )")
+
+            #create a new folder in school_output(dont work now)
+            new_output_folder_name = f"{self.type_name_ru} договоры от {current_time}"
+            folder_output = self.output_dir / new_output_folder_name
             try:
-                rewrite_dir = str(input("Папка уже существует. Старая будет перезаписана? (да / нет) ")).strip().lower()
-                if rewrite_dir == "да":
-                    pass
-                if rewrite_dir == "нет":
-                    #добавляем к названию папки (1)
-                    print("Программа завершена без создания директории")
-                    sys.exit()
-                else:
-                    print("Кажется, что-то пошло не так. Попробуйте еще раз")
+                folder_output.mkdir(parents=True, exist_ok=True) #поменять exist на True чтобы обрабатывать исключения при создании уже существующей папки
             except:
-                print("Кажется, что-то пошло не так. Попробуйте еще раз")
+                #test part
+                try:
+                    rewrite_dir = str(input("Папка уже существует. Старая будет перезаписана? (да / нет) ")).strip().lower()
+                    if rewrite_dir == "да":
+                        pass
+                    if rewrite_dir == "нет":
+                        #добавляем к названию папки (1)
+                        print("Программа завершена без создания директории")
+                        sys.exit()
+                    else:
+                        print("Кажется, что-то пошло не так. Попробуйте еще раз")
+                except:
+                    print("Кажется, что-то пошло не так. Попробуйте еще раз")
 
 
-        i=0
-        for school in self.schools_data[0]["schools"][self.school_type]:
+            i=0
+            for school in self.schools_data[0]["schools"][self.school_type]:
 
-            print(f"id: {school['id']}")
+                print(f"id: {school['id']}")
 
-            template_path = self.templates_dir / "contracts" / "contract_template.docx"
+                template_path = self.templates_dir / "contracts" / "contract_template.docx"
 
-            # Загрузка шаблона
-            doc = DocxTemplate(template_path)
+                # Загрузка шаблона
+                doc = DocxTemplate(template_path)
 
-            #считаем
-            #here using decimal for accurate calculations
-            cost_eat_decimal = Decimal(str(self.cost_eat))
-            day_count_decimal = Decimal(str(self.day_count))
-            child_count_decimal = Decimal(str(school['child_count']))
+                #считаем
+                #here using decimal for accurate calculations
+                cost_eat_decimal = Decimal(str(self.cost_eat))
+                day_count_decimal = Decimal(str(self.day_count))
+                child_count_decimal = Decimal(str(school['child_count']))
 
-            count_money = cost_eat_decimal * day_count_decimal * child_count_decimal
-            # Округляем до 2 знаков после запятой
-            count_money = count_money.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
-            
-            # Преобразование подсчитанного значения в текст
-            decoding_number_words = self.number_to_words(count_money) 
-
-            #название для договора
-            name_doc = f"{school['name']} договор от {current_time}"
-
-            # отображение всех классификаторов деятельности школ из конфига в инфе счета в документе
-            classification_info_text = "\n".join(
-                    f"{info['name']}: {info['value']}"
-                    for info in school['bank_account_info'][0]['classification_info']
-                )
-            
-            #variables context
-            year = self.year
-            contract_number = school['contract_number']
-            school_full_name = school['school_full_name'] 
-            school_short_name = school['school_short_name'] 
-            director_full_name = school['director_full_name'] 
-            director_short_name = school['director_short_name']
-            postal_code = school['postal_code']
-            full_location_school = school['full_location_school']
-            personal_account = school['bank_account_info'][0]['personal_account']
-            INN = school['bank_account_info'][0]['INN']
-            classification_info = classification_info_text
-
-            # Создание контекста для подстановки (переменные в документе)
-            context = {
-                    
-                'child_count': school["child_count"], 
-                'day_count': self.day_count,
-                'cost_eat': locale.format_string('%.2f', self.cost_eat, grouping=True), #всегда есть 00 после целого числа то есть всегда float
-                'count_money': locale.format_string('%.2f', float(count_money), grouping=True), #всегда есть 00 после целого числа то есть всегда float
-                'decoding_number_words': decoding_number_words, 
-                'date': self.date,
-                'date_conclusion': self.date_conclusion,
+                count_money = cost_eat_decimal * day_count_decimal * child_count_decimal
+                # Округляем до 2 знаков после запятой
+                count_money = count_money.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
                 
-                'year': year,
-                'contract_number': contract_number,
-                'school_full_name': school_full_name,
-                'school_short_name': school_short_name,
-                'director_full_name': director_full_name,
-                'director_short_name': director_short_name,
-                'postal_code':  postal_code,
-                'full_location_school': full_location_school,
-                'personal_account': personal_account,
-                'INN': INN,
-                'classification_info': classification_info
+                # Преобразование подсчитанного значения в текст
+                decoding_number_words = self.number_to_words(count_money) 
 
-                }
+                #название для договора
+                name_doc = f"{school['name']} договор от {current_time}"
 
-            i=i+1
-                # Подстановка значений
-            doc.render(context)
+                # отображение всех классификаторов деятельности школ из конфига в инфе счета в документе
+                classification_info_text = "\n".join(
+                        f"{info['name']}: {info['value']}"
+                        for info in school['bank_account_info'][0]['classification_info']
+                    )
+                
+                #variables context
+                year = self.year
+                contract_number = school['contract_number']
+                school_full_name = school['school_full_name'] 
+                school_short_name = school['school_short_name'] 
+                director_full_name = school['director_full_name'] 
+                director_short_name = school['director_short_name']
+                postal_code = school['postal_code']
+                full_location_school = school['full_location_school']
+                personal_account = school['bank_account_info'][0]['personal_account']
+                INN = school['bank_account_info'][0]['INN']
+                classification_info = classification_info_text
 
-            output_path = folder_output / f"{name_doc}.docx"
-                # Сохранение результата
-            doc.save(output_path)
+                # Создание контекста для подстановки (переменные в документе)
+                context = {
+                        
+                    'child_count': school["child_count"], 
+                    'day_count': self.day_count,
+                    'cost_eat': locale.format_string('%.2f', self.cost_eat, grouping=True), #всегда есть 00 после целого числа то есть всегда float
+                    'count_money': locale.format_string('%.2f', float(count_money), grouping=True), #всегда есть 00 после целого числа то есть всегда float
+                    'decoding_number_words': decoding_number_words, 
+                    'date': self.date,
+                    'date_conclusion': self.date_conclusion,
+                    
+                    'year': year,
+                    'contract_number': contract_number,
+                    'school_full_name': school_full_name,
+                    'school_short_name': school_short_name,
+                    'director_full_name': director_full_name,
+                    'director_short_name': director_short_name,
+                    'postal_code':  postal_code,
+                    'full_location_school': full_location_school,
+                    'personal_account': personal_account,
+                    'INN': INN,
+                    'classification_info': classification_info
 
-            print(f"{name_doc} успешно создан!")
+                    }
+
+                i=i+1
+                    # Подстановка значений
+                doc.render(context)
+
+                output_path = folder_output / f"{name_doc}.docx"
+                    # Сохранение результата
+                doc.save(output_path)
+
+                
+                if not all([self.common_values[key].get() for key in self.common_values]):
+                    messagebox.showwarning("Внимание", "Заполните все общие параметры!")
+                    return
+
+                self.log_text.insert("end", "Генерация завершена успешно!\n")
+                messagebox.showinfo("Успех", "Договоры успешно сгенерированы!")
+
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Ошибка генерации: {str(e)}")
 
 
 if __name__ == "__main__":

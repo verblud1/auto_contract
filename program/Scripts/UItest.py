@@ -52,7 +52,7 @@ class App(ctk.CTk):
                                    to=100,
                                    number_of_steps=10)
         self.slider.pack(pady=10)
-    
+        
     def button_callback(self):
         text = self.entry.get()
         messagebox.showinfo("Уведомление", f"Вы ввели: {text}")
