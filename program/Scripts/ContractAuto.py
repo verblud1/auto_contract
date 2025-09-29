@@ -21,6 +21,13 @@
 # улучшить и упростить вписывание данных из коммон валуес
 # добавить выбор цвета пользователем и настройку проги
 # exe добавить
+# объединить дату дату заключения и год
+# при вводе данных в значения из коммон валуес сразу запоминалось без необходимости нажатия кнопки сохрнать в файл
+# также без необходимости подгрузки данных из common_values 
+# разделить на файлы код 
+# допники сделать
+# возможность добавления школ пользователем и редактирование конфига
+# запись в конфиг кол-ва детей
 
 from docxtpl import DocxTemplate
 from num2words import num2words
@@ -35,6 +42,11 @@ import os
 import customtkinter as ctk
 from tkinter import messagebox
 
+# Настройка внешнего вида
+ctk.set_appearance_mode("System")  # Режим: "Light", "Dark" или "System"
+ctk.set_default_color_theme("blue")  # Темы: "blue", "green", "dark-blue"
+
+
 class ContractAuto_App(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -44,6 +56,7 @@ class ContractAuto_App(ctk.CTk):
         self.geometry("1000x700")
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
+
 
         #variables / find directions to files
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
