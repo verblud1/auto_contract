@@ -1,23 +1,86 @@
-
-# Виртуальное окружение
+# Виртуальные окружения
 .venv/
 venv/
+env/
+ENV/
 
 # Сборки PyInstaller
 build/
 dist/
+*.spec
+*.pyz
 
-# Выходные данные
+# Выходные данные приложения
 outputs/
 schools_output/
+*.docx
+*.pdf
 
 # Кэш Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
 
-# IDE
+# Рабочие файлы IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
-# Логи
+# Логи и временные файлы
 *.log
+*.tmp
+*.temp
+
+# Файлы настроек ОС
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Файлы базы данных (если понадобятся)
+*.db
+*.sqlite3
+
+# Файлы конфигурации с чувствительными данными
+config_local.py
+secrets.py
+.env
+.env.local
+
+# Резервные копии
+*.bak
+*.backup
+
+# Jupyter Notebook (если будете использовать)
+.ipynb_checkpoints/
+
+# Файлы покрытия тестов
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Файлы документации
+docs/_build/
+
+
+
+# Специфично для AUTO_CONTRACT
+/app/build/
+/app/dist/
+/app/*.spec
+/Additional_Agreement/
+/Camp_Agreement/
+/Contract/
+/plans.txt
+
+# Но оставляем нужные файлы данных
+!/data/
+!/data/common_values.txt
+!/data/config.json
+!/templates/
+!/templates/Additional_Agreement/
+!/templates/Camp_Agreement/
+!/templates/contract_template.docx
