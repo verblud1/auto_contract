@@ -73,8 +73,8 @@ docs/_build/
 /app/*.spec
 /Additional_Agreement/
 /Camp_Agreement/
-/Contract/
 /plans.txt
+
 
 # Но оставляем нужные файлы данных
 !/data/
