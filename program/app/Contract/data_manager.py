@@ -14,7 +14,7 @@ class DataManager:
         self.base_dir = base_dir  #родительский (корневой путь проги)
         self.templates_dir = base_dir / "templates" # шаблоны 
         self.output_dir = base_dir / "schools_output" # путь для вывода готовый доков 
-        self.data_dir = base_dir / "data" # дата файлы
+        self.data_dir = base_dir.parent / "data" # дата файлы
 
         # Устанавливаем локаль
         try:
@@ -63,12 +63,12 @@ class DataManager:
             print(f"Ошибка загрузки common_values: {e}")
             return {}
         
-        
+
     """Сохранение общих значений в common_values.txt"""
     def save_common_values(self, common_values):
         
         try:
-            values_file = self.base_dir.parent / 'common_values.txt'
+            values_file = self.data_dir / 'common_values.txt'
             with open(values_file, 'w', encoding='utf-8') as f:
                 f.write(f"Стоимость дня: {common_values['cost_eat']}\n")
                 f.write(f"Кол-во дней: {common_values['day_count']}\n")

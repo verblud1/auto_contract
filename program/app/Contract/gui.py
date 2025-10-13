@@ -3,20 +3,27 @@ from tkinter import messagebox
 
 from .data_manager import DataManager
 from .contract_generator import ContractGenerator
+from pathlib import Path
 
 # Настройка внешнего вида
 ctk.set_appearance_mode("System")  # Режим: "Light", "Dark" или "System"
 ctk.set_default_color_theme("blue")  # Темы: "blue", "green", "dark-blue"
 
 class ContractAutoApp(ctk.CTk):
-    def __init__(self):
+    def __init__(self, base_dir=None):
         super().__init__()
         
+        #Установка путей до файлов
+        #if base_dir is None:
+         #   base_dir = Path(__file__).parent.parent
+        #self.icon_dir =  base_dir / 'images' / 'icon' / 'icon.ico'
+
         # Настройка основного окна
         self.title("Авто Договор")
         self.geometry("500x700")
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
+        #self.iconbitmap(self.icon_dir)
 
         # Инициализация менеджеров
         self.data_manager = DataManager()
