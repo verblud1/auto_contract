@@ -5,13 +5,16 @@ from tkinter import messagebox
 
 class DataManager:
     def __init__(self, base_dir=None):
+
+        #Установка путей до файлов
         if base_dir is None:
             base_dir = Path(__file__).parent.parent
         
-        self.base_dir = base_dir
-        self.templates_dir = base_dir / "templates"
-        self.output_dir = base_dir / "schools_output"
-        self.data_dir = base_dir / "data"
+        #Основные пути
+        self.base_dir = base_dir  #родительский (корневой путь проги)
+        self.templates_dir = base_dir / "templates" # шаблоны 
+        self.output_dir = base_dir / "schools_output" # путь для вывода готовый доков 
+        self.data_dir = base_dir / "data" # дата файлы
 
         # Устанавливаем локаль
         try:
@@ -19,10 +22,12 @@ class DataManager:
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
+
+    """Загрузка общих значений из common_values.txt"""
     def load_common_values(self):
-        """Загрузка общих значений из common_values.txt"""
+        
         try:
-            values_file_path = self.base_dir.parent / 'common_values.txt'
+            values_file_path = self.data_dir / 'common_values.txt'
             
             if not values_file_path.exists():
                 return {
@@ -57,9 +62,11 @@ class DataManager:
         except Exception as e:
             print(f"Ошибка загрузки common_values: {e}")
             return {}
-
+        
+        
+    """Сохранение общих значений в common_values.txt"""
     def save_common_values(self, common_values):
-        """Сохранение общих значений в common_values.txt"""
+        
         try:
             values_file = self.base_dir.parent / 'common_values.txt'
             with open(values_file, 'w', encoding='utf-8') as f:
@@ -73,8 +80,10 @@ class DataManager:
             print(f"Ошибка сохранения: {e}")
             return False
 
+
+    """Загрузка конфигурации школ"""
     def load_schools_config(self):
-        """Загрузка конфигурации школ"""
+        
         try:
             config_file = self.data_dir / "config.json"
             if config_file.exists():
@@ -85,8 +94,10 @@ class DataManager:
             print(f"Ошибка загрузки конфига школ: {e}")
             return None
 
+
+    """Обновление количества детей для школы"""
     def update_school_child_count(self, schools_data, school_type, school_id, child_count):
-        """Обновление количества детей для школы"""
+       
         try:
             for school in schools_data[0]["schools"][school_type]:
                 if school["id"] == school_id:
