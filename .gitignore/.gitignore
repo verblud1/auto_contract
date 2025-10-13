@@ -1,0 +1,23 @@
+
+# Виртуальное окружение
+.venv/
+venv/
+
+# Сборки PyInstaller
+build/
+dist/
+
+# Выходные данные
+outputs/
+schools_output/
+
+# Кэш Python
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
+
+# Логи
+*.log

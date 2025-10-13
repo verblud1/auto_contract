@@ -1,15 +1,15 @@
 import customtkinter as ctk
 from tkinter import messagebox
 
-from .data_manager import DataManager
-from .contract_generator import ContractGenerator
+from core.contract_generator import ContractGenerator
+from core.data_manager import DataManager
 from pathlib import Path
 
 # Настройка внешнего вида
 ctk.set_appearance_mode("System")  # Режим: "Light", "Dark" или "System"
 ctk.set_default_color_theme("blue")  # Темы: "blue", "green", "dark-blue"
 
-class ContractAutoApp(ctk.CTk):
+class MainWindow(ctk.CTk):
     def __init__(self, base_dir=None):
         super().__init__()
         

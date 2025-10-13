@@ -8,34 +8,21 @@ import os
 class DataManager:
     def __init__(self, base_dir=None):
         # Определяем функцию resource_path для PyInstaller
-        def resource_path(relative_path):
-            """Возвращает корректный путь для доступа к ресурсам в PyInstaller"""
-            try:
-                # PyInstaller создает временную папку _MEIPASS
-                base_path = sys._MEIPASS
-            except Exception:
-                base_path = os.path.abspath(".")
-            
-            return os.path.join(base_path, relative_path)
-
-        self.resource_path = resource_path
-
-        # Устанавливаем базовую директорию
         if getattr(sys, 'frozen', False):
-            # Если приложение собрано PyInstaller
+            # Режим PyInstaller
             self.base_dir = Path(sys.executable).parent
         else:
-            # Если запущено из исходного кода
-            # Указываем правильный путь к корневой директории проекта
-            self.base_dir = Path(__file__).parent.parent if base_dir is None else base_dir
-
-        # Основные пути - исправляем согласно вашей структуре
-        self.templates_dir = self.base_dir.parent / "templates"  # шаблоны 
-        self.output_dir = self.base_dir / "schools_output"  # путь для вывода готовых документов
-        self.data_dir = self.base_dir / "data"  # дата файлы - теперь указываем на program/data
-
-        # Создаем выходную директорию, если её нет
-        self.output_dir.mkdir(exist_ok=True)
+            # Режим разработки
+            self.base_dir = Path(__file__).parent.parent.parent
+        
+        # Основные пути
+        self.data_dir = self.base_dir / "data"
+        self.templates_dir = self.base_dir / "templates"
+        self.output_dir = self.base_dir / "outputs"
+        self.resources_dir = self.base_dir / "resources"
+        
+        # Создаем необходимые директории
+        self._create_directories()
 
         # Устанавливаем локаль
         try:
@@ -51,6 +38,25 @@ class DataManager:
         print(f"Data dir: {self.data_dir}")
         print(f"Templates dir: {self.templates_dir}")
         print(f"Output dir: {self.output_dir}")
+
+
+    def _create_directories(self):
+        """Создает необходимые директории"""
+        self.data_dir.mkdir(exist_ok=True)
+        self.templates_dir.mkdir(exist_ok=True)
+        self.output_dir.mkdir(exist_ok=True)
+        self.resources_dir.mkdir(exist_ok=True)
+    
+    def get_template_path(self, template_type="contracts"):
+        """Возвращает путь к шаблонам по типу"""
+        return self.templates_dir / template_type
+    
+    def get_output_path(self, output_type="contracts"):
+        """Возвращает путь для выходных файлов по типу"""
+        path = self.output_dir / output_type
+        path.mkdir(exist_ok=True)
+        return path
+    
 
     """Загрузка общих значений из common_values.txt"""
     def load_common_values(self):
@@ -157,12 +163,6 @@ class DataManager:
         except Exception as e:
             print(f"Ошибка обновления количества детей: {e}")
             return False
-
-
-
-
-
-
 
 
 
