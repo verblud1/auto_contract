@@ -30,7 +30,7 @@ class MainWindow(ctk.CTk):
         self.contract_generator = ContractGenerator(self.data_manager)
 
         # Переменные
-        self.school_type = ctk.StringVar(value="town")
+        self.school_type = ctk.StringVar(value="town") # тип школы по умолчанию город, если отличается - район
         self.common_values = {
             "cost_eat": ctk.DoubleVar(value=0.0),
             "day_count": ctk.IntVar(value=0),
@@ -54,11 +54,14 @@ class MainWindow(ctk.CTk):
         self.tabview.add("Общие настройки")
         self.tabview.add("Школы")
         self.tabview.add("Генерация")
+        self.tabview.add("Допники")
+        self.tabview.add("Лагерь")
         
         # Настройка вкладок
         self.setup_general_tab()
         self.setup_schools_tab()
         self.setup_generation_tab()
+        self.setup_additional_agr_tab()
 
     def setup_general_tab(self):
         tab = self.tabview.tab("Общие настройки")
@@ -74,8 +77,8 @@ class MainWindow(ctk.CTk):
         btn_frame = ctk.CTkFrame(tab)
         btn_frame.grid(row=len(labels), column=0, columnspan=2, pady=20)
         
-        ctk.CTkButton(btn_frame, text="Загрузить из файла", command=self.load_values).pack(side="left", padx=10)
-        ctk.CTkButton(btn_frame, text="Сохранить в файл", command=self.save_values).pack(side="left", padx=10)
+
+        ctk.CTkButton(btn_frame, text="Сохранить", command=self.save_values).pack(side="left", padx=10)
         
         tab.grid_columnconfigure(1, weight=1)
 
@@ -112,14 +115,26 @@ class MainWindow(ctk.CTk):
         
         ctk.CTkButton(tab, text="Сгенерировать договоры", command=self.generate_contracts,
                      fg_color="green", hover_color="dark green").grid(row=3, column=0, pady=20)
+    
+
+    def setup_additional_agr_tab(self):
+        """Загрузка допников"""
+        
+        tab = self.tabview.tab("Допники")
+        tab.grid_columnconfigure(0,weight=1)
+        tab.grid_rowconfigure(1,weight=1)
+        type_frame = ctk.CTkFrame(tab)
+        type_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=10)
+        
+        ctk.CTkLabel(type_frame, text="Допники").pack(side="left", padx=10)
+
 
     def load_initial_data(self):
         """Загрузка начальных данных"""
+
         # Загрузка common_values
-        common_values_dict = self.data_manager.load_common_values()
-        for key, value in common_values_dict.items():
-            if key in self.common_values:
-                self.common_values[key].set(value)
+        self.load_values()
+
 
         # Загрузка конфига школ
         self.schools_data = self.data_manager.load_schools_config()
@@ -127,6 +142,7 @@ class MainWindow(ctk.CTk):
             self.update_schools_display()
         else:
             messagebox.showerror("Ошибка", "Не удалось загрузить конфигурацию школ!")
+
 
     def update_schools_display(self):
         """Обновление отображения школ с placeholder"""
@@ -186,7 +202,8 @@ class MainWindow(ctk.CTk):
             pass
 
     def load_values(self):
-        """Загрузка значений из файла"""
+        """Загрузка общих значений из файла"""
+
         common_values_dict = self.data_manager.load_common_values()
         for key, value in common_values_dict.items():
             if key in self.common_values:
