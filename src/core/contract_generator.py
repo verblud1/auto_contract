@@ -7,7 +7,12 @@ from tkinter import messagebox
 import sys
 import os
 
-from .utils import number_to_words
+# Исправляем импорт - убираем точку если это не пакет
+try:
+    from .utils import number_to_words
+except ImportError:
+    # Альтернативный импорт для случая, когда модуль не является пакетом
+    from utils import number_to_words
 
 class ContractGenerator:
     def __init__(self, data_manager):
@@ -20,7 +25,11 @@ class ContractGenerator:
             try:
                 locale.setlocale(locale.LC_ALL, 'Russian_Russia.1251')
             except:
-                locale.setlocale(locale.LC_ALL, '')
+                try:
+                    locale.setlocale(locale.LC_ALL, '')
+                except:
+                    pass  # Если не удалось установить локаль, продолжаем без нее
+
 
     def generate_contracts(self, common_values, schools_data, school_type, progress_callback=None, log_callback=None):
         """Генерация договоров для всех школ"""
@@ -109,6 +118,7 @@ class ContractGenerator:
                 log_callback(f"Критическая ошибка генерации: {str(e)}")
             return 0, 0
 
+
     def generate_single_contract(self, common_values, school, output_dir, current_time, log_callback=None):
         """Генерация договора для одной школы"""
         try:
@@ -119,10 +129,10 @@ class ContractGenerator:
                     log_callback(f"Шаблон не найден: {template_path}")
                 return False
 
-            # Проверяем обязательные поля
+            # Проверяем обязательные поля с безопасным доступом
             required_fields = ['cost_eat', 'day_count', 'date', 'date_conclusion', 'year']
             for field in required_fields:
-                if field not in common_values or not common_values[field]:
+                if field not in common_values or common_values.get(field) in [None, ""]:
                     if log_callback:
                         log_callback(f"Отсутствует обязательное поле: {field}")
                     return False
@@ -137,9 +147,14 @@ class ContractGenerator:
 
             # Расчет стоимости с проверкой значений
             try:
-                cost_eat_decimal = Decimal(str(common_values["cost_eat"]))
-                day_count_decimal = Decimal(str(common_values["day_count"]))
-                child_count_decimal = Decimal(str(school.get('child_count', 0)))
+                cost_eat = common_values["cost_eat"]
+                day_count = common_values["day_count"]
+                child_count = school.get('child_count', 0)
+                
+                # Преобразуем в Decimal с обработкой ошибок
+                cost_eat_decimal = Decimal(str(cost_eat)) if cost_eat else Decimal('0')
+                day_count_decimal = Decimal(str(day_count)) if day_count else Decimal('0')
+                child_count_decimal = Decimal(str(child_count)) if child_count else Decimal('0')
 
                 count_money = cost_eat_decimal * day_count_decimal * child_count_decimal
                 count_money = count_money.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
@@ -150,7 +165,7 @@ class ContractGenerator:
                         log_callback("Ошибка: отрицательная сумма договора")
                     return False
                     
-            except (ValueError, TypeError) as e:
+            except (ValueError, TypeError, Exception) as e:
                 if log_callback:
                     log_callback(f"Ошибка расчета стоимости: {str(e)}")
                 return False
@@ -161,11 +176,15 @@ class ContractGenerator:
             except Exception as e:
                 if log_callback:
                     log_callback(f"Ошибка преобразования числа в слова: {str(e)}")
-                decoding_number_words = "ошибка преобразования"
+                # Используем запасной вариант
+                try:
+                    decoding_number_words = f"{count_money} рублей"
+                except:
+                    decoding_number_words = "сумма прописью"
 
             # Название для договора (убираем недопустимые символы в имени файла)
             invalid_chars = ['<', '>', ':', '"', '/', '\\', '|', '?', '*']
-            school_name_clean = school['name']
+            school_name_clean = school.get('name', 'Школа')
             for char in invalid_chars:
                 school_name_clean = school_name_clean.replace(char, '_')
                 
@@ -174,25 +193,40 @@ class ContractGenerator:
             # Формирование информации о классификаторах
             classification_info_text = ""
             try:
-                if 'bank_account_info' in school and school['bank_account_info']:
-                    classification_info_text = "\n".join(
-                        f"{info['name']}: {info['value']}"
-                        for info in school['bank_account_info'][0].get('classification_info', [])
-                    )
+                bank_account_info = school.get('bank_account_info', [{}])
+                if bank_account_info and isinstance(bank_account_info, list) and len(bank_account_info) > 0:
+                    classification_info = bank_account_info[0].get('classification_info', [])
+                    if classification_info:
+                        classification_info_text = "\n".join(
+                            f"{info.get('name', '')}: {info.get('value', '')}"
+                            for info in classification_info
+                            if isinstance(info, dict) and 'name' in info and 'value' in info
+                        )
             except Exception as e:
                 if log_callback:
                     log_callback(f"Ошибка формирования банковской информации: {str(e)}")
 
+            # Форматирование чисел с учетом локали
+            try:
+                cost_eat_formatted = locale.format_string('%.2f', float(cost_eat), grouping=True)
+            except:
+                cost_eat_formatted = str(cost_eat)
+                
+            try:
+                count_money_formatted = locale.format_string('%.2f', float(count_money), grouping=True)
+            except:
+                count_money_formatted = str(count_money)
+
             # Создание контекста с безопасным получением значений
             context = {
                 'child_count': school.get('child_count', 0), 
-                'day_count': common_values["day_count"],
-                'cost_eat': locale.format_string('%.2f', common_values["cost_eat"], grouping=True),
-                'count_money': locale.format_string('%.2f', float(count_money), grouping=True),
+                'day_count': common_values.get("day_count", 0),
+                'cost_eat': cost_eat_formatted,
+                'count_money': count_money_formatted,
                 'decoding_number_words': decoding_number_words, 
-                'date': common_values["date"],
-                'date_conclusion': common_values["date_conclusion"],
-                'year': common_values["year"],
+                'date': common_values.get("date", ""),
+                'date_conclusion': common_values.get("date_conclusion", ""),
+                'year': common_values.get("year", ""),
                 'contract_number': school.get('contract_number', ''),
                 'school_full_name': school.get('school_full_name', ''),
                 'school_short_name': school.get('school_short_name', ''),
@@ -223,5 +257,5 @@ class ContractGenerator:
 
         except Exception as e:
             if log_callback:
-                log_callback(f"Общая ошибка генерации договора для {school['name']}: {e}")
+                log_callback(f"Общая ошибка генерации договора для {school.get('name', 'неизвестная школа')}: {e}")
             return False

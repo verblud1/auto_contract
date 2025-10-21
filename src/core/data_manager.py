@@ -3,6 +3,7 @@ import locale
 from pathlib import Path
 from tkinter import messagebox
 import sys
+import re
 import os
 
 class DataManager:
@@ -39,7 +40,6 @@ class DataManager:
         print(f"Templates dir: {self.templates_dir}")
         print(f"Output dir: {self.output_dir}")
 
-
     def _create_directories(self):
         """Создает необходимые директории"""
         self.data_dir.mkdir(exist_ok=True)
@@ -56,12 +56,11 @@ class DataManager:
         path = self.output_dir / output_type
         path.mkdir(exist_ok=True)
         return path
-    
 
-    """Загрузка общих значений из common_values.txt"""
     def load_common_values(self):
+        """Загрузка общих значений из common_values.txt"""
         try:
-            # Теперь используем правильный путь к data директории
+            # путь к common values директории
             values_file_path = self.data_dir / 'common_values.txt'
             
             print(f"Ищем common_values.txt по пути: {values_file_path}")
@@ -72,9 +71,9 @@ class DataManager:
                 return {
                     "cost_eat": 100.0,
                     "day_count": 30,
-                    "date": "01.01.2024",
-                    "date_conclusion": "01.01.2024",
-                    "year": "2024"
+                    "date_conclusion": "с 1 сентября по 31 октября 2025 года",
+                    "date": "1 сентября 2025 года",
+                    "year": "2025"
                 }
 
             common_values = {}
@@ -89,13 +88,33 @@ class DataManager:
                             common_values["cost_eat"] = float(value)
                         elif key == "Кол-во дней":
                             common_values["day_count"] = int(value)
-                        elif key == "Дата":
-                            common_values["date"] = value
                         elif key == "Дата заключения договора":
                             common_values["date_conclusion"] = value
+                        elif key == "Дата":
+                            common_values["date"] = value
                         elif key == "Год":
                             common_values["year"] = value
-
+            
+            # Если date и year не были загружены, извлекаем их из date_conclusion
+            if "date_conclusion" in common_values and ("date" not in common_values or "year" not in common_values):
+                date_info = self.extract_date_from_period(common_values["date_conclusion"])
+                if date_info:
+                    common_values["date"] = date_info["date"]
+                    common_values["year"] = date_info["year"]
+            
+            # Убедимся, что все обязательные поля присутствуют
+            default_values = {
+                "cost_eat": 100.0,
+                "day_count": 30,
+                "date_conclusion": "с 1 сентября по 31 октября 2025 года",
+                "date": "1 сентября 2025 года",
+                "year": "2025"
+            }
+            
+            for key, default_value in default_values.items():
+                if key not in common_values:
+                    common_values[key] = default_value
+                        
             print(f"Загружены common_values: {common_values}")
             return common_values
             
@@ -105,13 +124,56 @@ class DataManager:
             return {
                 "cost_eat": 100.0,
                 "day_count": 30,
-                "date": "01.01.2024",
-                "date_conclusion": "01.01.2024",
-                "year": "2024"
+                "date_conclusion": "с 1 сентября по 31 октября 2025 года",
+                "date": "1 сентября 2025 года",
+                "year": "2025"
             }
 
-    """Сохранение общих значений в common_values.txt"""
+    def extract_date_from_period(self, period_string):
+        """Извлекает дату и год из строки периода"""
+        try:
+            # Паттерн для извлечения даты начала периода
+            # Пример: "с 10 сентября по 20 ноября 2025 года"
+            pattern = r'с\s+(\d+)\s+(\w+)\s+по\s+\d+\s+\w+\s+(\d{4})\s+года'
+            match = re.search(pattern, period_string)
+            
+            if match:
+                day = match.group(1)  # "10"
+                month = match.group(2)  # "сентября"
+                year = match.group(3)  # "2025"
+                
+                date = f"{day} {month} {year} года"
+                
+                return {
+                    "date": date,
+                    "year": year
+                }
+            
+            # Альтернативный паттерн для другого формата
+            pattern2 = r'с\s+\d+\s+(\w+\s+\d{4})\s+года'
+            match2 = re.search(pattern2, period_string)
+            
+            if match2:
+                full_period = match2.group(1)  # "сентября 2025"
+                date = f"{full_period} года"
+                
+                # Извлекаем год
+                year_match = re.search(r'\d{4}', full_period)
+                year = year_match.group() if year_match else "2025"
+                
+                return {
+                    "date": date,
+                    "year": year
+                }
+            
+            return None
+            
+        except Exception as e:
+            print(f"Ошибка извлечения даты из периода: {e}")
+            return None
+
     def save_common_values(self, common_values):
+        """Сохранение общих значений в common_values.txt"""
         try:
             # Сохраняем в data директории
             values_file_path = self.data_dir / 'common_values.txt'
@@ -121,9 +183,10 @@ class DataManager:
             with open(values_file_path, 'w', encoding='utf-8') as f:
                 f.write(f"Стоимость дня: {common_values['cost_eat']}\n")
                 f.write(f"Кол-во дней: {common_values['day_count']}\n")
-                f.write(f"Дата: {common_values['date']}\n")
                 f.write(f"Дата заключения договора: {common_values['date_conclusion']}\n")
-                f.write(f"Год: {common_values['year']}\n")
+                # Всегда сохраняем date и year для надежности
+                f.write(f"Дата: {common_values.get('date', '1 сентября 2025 года')}\n")
+                f.write(f"Год: {common_values.get('year', '2025')}\n")
             
             print("Common_values успешно сохранены")
             return True
@@ -131,8 +194,8 @@ class DataManager:
             print(f"Ошибка сохранения: {e}")
             return False
 
-    """Загрузка конфигурации школ"""
     def load_schools_config(self):
+        """Загрузка конфигурации школ"""
         try:
             config_file = self.data_dir / "config.json"
             print(f"Ищем config.json по пути: {config_file}")
@@ -150,8 +213,8 @@ class DataManager:
             print(f"Ошибка загрузки конфига школ: {e}")
             return None
 
-    """Обновление количества детей для школы"""
     def update_school_child_count(self, schools_data, school_type, school_id, child_count):
+        """Обновление количества детей для школы"""
         try:
             if schools_data and len(schools_data) > 0:
                 for school in schools_data[0]["schools"][school_type]:
@@ -164,10 +227,8 @@ class DataManager:
             print(f"Ошибка обновления количества детей: {e}")
             return False
 
-
-
-    """Проверка существования шаблона договора"""
     def check_template_exists(self):
+        """Проверка существования шаблона договора"""
         template_path = self.templates_dir / "contracts" / "contract_template.docx"
         exists = template_path.exists()
         print(f"Шаблон договора существует: {exists} (путь: {template_path})")
