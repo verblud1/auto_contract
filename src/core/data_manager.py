@@ -52,14 +52,14 @@ class DataManager:
         return self.config.resources_dir
 
     def load_common_values(self):
-        """Загрузка общих значений из common_values.txt (идентично оригиналу)"""
+        """Загрузка общих значений из common_values.txt"""
         try:
             # путь к common values директории
             values_file_path = self.data_dir / 'common_values.txt'
-            
+        
             print(f"Ищем common_values.txt по пути: {values_file_path}")
             print(f"Файл существует: {values_file_path.exists()}")
-            
+        
             if not values_file_path.exists():
                 print("Файл common_values.txt не найден, создаем значения по умолчанию")
                 return {
@@ -77,7 +77,7 @@ class DataManager:
                         key, value = line.split(':', 1)
                         key = key.strip()
                         value = value.strip()
-                            
+                        
                         if key == "Стоимость дня":
                             common_values["cost_eat"] = float(value)
                         elif key == "Кол-во дней":
@@ -88,14 +88,16 @@ class DataManager:
                             common_values["date"] = value
                         elif key == "Год":
                             common_values["year"] = value
-            
-            # Если date и year не были загружены, извлекаем их из date_conclusion
-            if "date_conclusion" in common_values and ("date" not in common_values or "year" not in common_values):
+        
+            # ВАЖНОЕ ИЗМЕНЕНИЕ: Всегда извлекаем date и year из date_conclusion
+            if "date_conclusion" in common_values:
                 date_info = self.extract_date_from_period(common_values["date_conclusion"])
                 if date_info:
+                    # Перезаписываем date и year значениями из периода
                     common_values["date"] = date_info["date"]
                     common_values["year"] = date_info["year"]
-            
+                    print(f"Извлекли дату из периода: date='{date_info['date']}', year='{date_info['year']}'")
+        
             # Убедимся, что все обязательные поля присутствуют
             default_values = {
                 "cost_eat": 100.0,
@@ -104,14 +106,14 @@ class DataManager:
                 "date": "1 сентября 2025 года",
                 "year": "2025"
             }
-            
+        
             for key, default_value in default_values.items():
                 if key not in common_values:
                     common_values[key] = default_value
-                        
+                    
             print(f"Загружены common_values: {common_values}")
             return common_values
-            
+        
         except Exception as e:
             print(f"Ошибка загрузки common_values: {e}")
             # Возвращаем значения по умолчанию при ошибке
@@ -124,61 +126,57 @@ class DataManager:
             }
 
     def extract_date_from_period(self, period_string):
-        """Извлекает дату и год из строки периода (идентично оригиналу)"""
+        """Извлекает дату и год из строки периода"""
         try:
-            # Паттерн для извлечения даты начала периода
-            # Пример: "с 10 сентября по 20 ноября 2025 года"
+            print(f"Извлекаем дату из периода: '{period_string}'")
+            
+            # Основной паттерн: "с 1 сентября по 31 октября 2025 года"
             pattern = r'с\s+(\d+)\s+(\w+)\s+по\s+\d+\s+\w+\s+(\d{4})\s+года'
             match = re.search(pattern, period_string)
             
             if match:
-                day = match.group(1)  # "10"
+                day = match.group(1)  # "1"
                 month = match.group(2)  # "сентября"
                 year = match.group(3)  # "2025"
                 
+                # Формат даты: "1 сентября 2025 года"
                 date = f"{day} {month} {year} года"
                 
-                return {
-                    "date": date,
-                    "year": year
-                }
-            
-            # Альтернативный паттерн для другого формата
-            pattern2 = r'с\s+\d+\s+(\w+\s+\d{4})\s+года'
-            match2 = re.search(pattern2, period_string)
-            
-            if match2:
-                full_period = match2.group(1)  # "сентября 2025"
-                date = f"{full_period} года"
-                
-                # Извлекаем год
-                year_match = re.search(r'\d{4}', full_period)
-                year = year_match.group() if year_match else "2025"
+                print(f"Извлекли: day={day}, month={month}, year={year}, date={date}")
                 
                 return {
                     "date": date,
                     "year": year
                 }
             
+            print(f"Не удалось извлечь дату из периода: '{period_string}'")
             return None
             
         except Exception as e:
             print(f"Ошибка извлечения даты из периода: {e}")
             return None
-
+        
     def save_common_values(self, common_values):
-        """Сохранение общих значений в common_values.txt (идентично оригиналу)"""
+        """Сохранение общих значений в common_values.txt"""
         try:
             # Сохраняем в data директории
             values_file_path = self.data_dir / 'common_values.txt'
             
             print(f"Сохраняем common_values в: {values_file_path}")
             
+            # ВАЖНОЕ ИЗМЕНЕНИЕ: Перед сохранением убедимся, что date и year синхронизированы с date_conclusion
+            if "date_conclusion" in common_values:
+                date_info = self.extract_date_from_period(common_values["date_conclusion"])
+                if date_info:
+                    # Обновляем date и year на основе date_conclusion
+                    common_values["date"] = date_info["date"]
+                    common_values["year"] = date_info["year"]
+                    print(f"Синхронизировали date и year с date_conclusion")
+            
             with open(values_file_path, 'w', encoding='utf-8') as f:
                 f.write(f"Стоимость дня: {common_values['cost_eat']}\n")
                 f.write(f"Кол-во дней: {common_values['day_count']}\n")
                 f.write(f"Дата заключения договора: {common_values['date_conclusion']}\n")
-                # Всегда сохраняем date и year для надежности
                 f.write(f"Дата: {common_values.get('date', '1 сентября 2025 года')}\n")
                 f.write(f"Год: {common_values.get('year', '2025')}\n")
             

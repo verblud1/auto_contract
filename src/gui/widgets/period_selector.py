@@ -11,7 +11,6 @@ class PeriodSelector(ctk.CTkFrame):
         self.change_callback = change_callback
         
         self.create_widgets()
-        self.update_display()
         
     def create_widgets(self):
         """Создание виджетов периода"""
@@ -80,8 +79,8 @@ class PeriodSelector(ctk.CTkFrame):
         """Обработчик изменения периода"""
         self.change_callback()
     
-    def update_display(self):
-        """Обновление отображения периода"""
+    def get_period_string(self):
+        """Получение строки периода"""
         start_day = self.period_vars["start_day"].get()
         start_month = self.period_vars["start_month"].get()
         end_day = self.period_vars["end_day"].get()
@@ -90,6 +89,10 @@ class PeriodSelector(ctk.CTkFrame):
         
         return f"с {start_day} {start_month} по {end_day} {end_month} {year} года"
     
-    def get_period_string(self):
-        """Получение строки периода"""
-        return self.update_display()
+    def get_date_string(self):
+        """Получение строки даты (только начало периода)"""
+        start_day = self.period_vars["start_day"].get()
+        start_month = self.period_vars["start_month"].get()
+        year = self.period_vars["year"].get()
+        
+        return f"{start_day} {start_month} {year} года"
