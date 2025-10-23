@@ -1,0 +1,66 @@
+[
+  {
+    "schools": {
+      "town": [
+        {
+          "id": 1,
+          "name": "Городская школа 1",
+          "child_count": 0,
+          "contract_number": "Г-001",
+          "school_full_name": "Муниципальное бюджетное общеобразовательное учреждение «Городская школа №1»",
+          "school_short_name": "МБОУ «Городская школа №1»",
+          "director_full_name": "Иванова Мария Петровна",
+          "director_short_name": "Иванова М.П.",
+          "postal_code": "123456",
+          "full_location_school": "г. Москва, ул. Ленина, д. 1",
+          "bank_account_info": [
+            {
+              "personal_account": "40702810000000000001",
+              "INN": "7701000000",
+              "classification_info": [
+                {
+                  "name": "БИК",
+                  "value": "044525000"
+                },
+                {
+                  "name": "Банк",
+                  "value": "ПАО СБЕРБАНК"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "district": [
+        {
+          "id": 101,
+          "name": "Районная школа 1",
+          "child_count": 0,
+          "contract_number": "Р-001",
+          "school_full_name": "Муниципальное бюджетное общеобразовательное учреждение «Районная школа №1»",
+          "school_short_name": "МБОУ «Районная школа №1»",
+          "director_full_name": "Петров Иван Сергеевич",
+          "director_short_name": "Петров И.С.",
+          "postal_code": "654321",
+          "full_location_school": "Московская область, г. Подольск, ул. Центральная, д. 10",
+          "bank_account_info": [
+            {
+              "personal_account": "40702810000000000002",
+              "INN": "7701000001",
+              "classification_info": [
+                {
+                  "name": "БИК",
+                  "value": "044525000"
+                },
+                {
+                  "name": "Банк",
+                  "value": "ПАО СБЕРБАНК"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

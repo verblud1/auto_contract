@@ -3,27 +3,46 @@ from tkinter import messagebox
 
 from core.contract_generator import ContractGenerator
 from core.data_manager import DataManager
-from pathlib import Path
+from core.config import Config
 
-# Настройка внешнего вида
-ctk.set_appearance_mode("System")
-ctk.set_default_color_theme("blue")
+from gui.tabs.general_tab import GeneralTab
+from gui.tabs.schools_tab import SchoolsTab
+from gui.tabs.generation_tab import GenerationTab
 
 class MainWindow(ctk.CTk):
-    def __init__(self, base_dir=None):
+    """Главное окно приложения"""
+    
+    def __init__(self):
         super().__init__()
         
+        # Инициализация конфигурации
+        self.config = Config()
+        
         # Настройка основного окна
+        self.setup_window()
+        
+        # Инициализация менеджеров
+        self.data_manager = DataManager()
+        self.contract_generator = ContractGenerator(self.data_manager)
+        
+        # Инициализация переменных
+        self.init_variables()
+        
+        # Создание интерфейса
+        self.create_widgets()
+        
+        # Загрузка данных
+        self.load_initial_data()
+    
+    def setup_window(self):
+        """Настройка главного окна"""
         self.title("Авто Договор")
         self.geometry("600x800")
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
-
-        # Инициализация менеджеров
-        self.data_manager = DataManager()
-        self.contract_generator = ContractGenerator(self.data_manager)
-
-        # Переменные
+    
+    def init_variables(self):
+        """Инициализация переменных"""
         self.school_type = ctk.StringVar(value="town")
         self.common_values = {
             "cost_eat": ctk.DoubleVar(value=0.0),
@@ -31,7 +50,6 @@ class MainWindow(ctk.CTk):
             "date_conclusion": ctk.StringVar(value=""),
         }
         
-        # Переменные для периода
         self.period_vars = {
             "start_day": ctk.StringVar(value="1"),
             "start_month": ctk.StringVar(value="сентября"),
@@ -40,20 +58,14 @@ class MainWindow(ctk.CTk):
             "year": ctk.StringVar(value="2025")
         }
         
-        # Списки для выпадающих списков
-        self.days = [str(i) for i in range(1, 32)]  # 1-31
-        self.months = [
-            "января", "февраля", "марта", "апреля", "мая", "июня",
-            "июля", "августа", "сентября", "октября", "ноября", "декабря"
-        ]
+        self.days = self.config.days
+        self.months = self.config.months
         
         self.schools_data = None
         self.school_vars = {}
-
-        self.create_widgets()
-        self.load_initial_data()
-
+    
     def create_widgets(self):
+        """Создание виджетов"""
         # Создание вкладок
         self.tabview = ctk.CTkTabview(self)
         self.tabview.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
@@ -63,137 +75,34 @@ class MainWindow(ctk.CTk):
         self.tabview.add("Школы")
         self.tabview.add("Генерация")
         
-        # Настройка вкладок
-        self.setup_general_tab()
-        self.setup_schools_tab()
-        self.setup_generation_tab()
-
-    def setup_general_tab(self):
-        tab = self.tabview.tab("Общие настройки")
-        tab.grid_columnconfigure(1, weight=1)
-        
-        # Основные параметры
-        main_labels = ["Стоимость питания (руб):", "Количество дней:"]
-        main_keys = ["cost_eat", "day_count"]
-        
-        for i, (label, key) in enumerate(zip(main_labels, main_keys)):
-            ctk.CTkLabel(tab, text=label).grid(row=i, column=0, padx=10, pady=10, sticky="w")
-            entry = ctk.CTkEntry(tab, textvariable=self.common_values[key])
-            entry.grid(row=i, column=1, padx=10, pady=10, sticky="ew")
-            entry.bind('<KeyRelease>', lambda e, k=key: self.save_values())
-
-        # Разделитель
-        separator = ctk.CTkFrame(tab, height=2, fg_color="gray")
-        separator.grid(row=len(main_labels), column=0, columnspan=2, sticky="ew", pady=20)
-        
-        # Заголовок для периода
-        ctk.CTkLabel(tab, text="Период действия договора", 
-                    font=ctk.CTkFont(size=14, weight="bold")).grid(
-                    row=len(main_labels)+1, column=0, columnspan=2, pady=10, sticky="w")
-        
-        # Фрейм для периода
-        period_frame = ctk.CTkFrame(tab)
-        period_frame.grid(row=len(main_labels)+2, column=0, columnspan=2, sticky="ew", padx=10, pady=10)
-        
-        # Компоненты строки периода
-        row = 0
-        
-        # Нередактируемая часть: "с"
-        ctk.CTkLabel(period_frame, text="с", font=ctk.CTkFont(weight="bold")).grid(
-            row=row, column=0, padx=(10, 2), pady=10)
-        
-        # Выпадающий список: день начала (1-31)
-        start_day_combo = ctk.CTkComboBox(period_frame, 
-                                         values=self.days,
-                                         variable=self.period_vars["start_day"],
-                                         width=60,
-                                         state="readonly")
-        start_day_combo.grid(row=row, column=1, padx=2, pady=10)
-        start_day_combo.bind('<<ComboboxSelected>>', lambda e: self.on_period_change())
-        
-        # Выпадающий список: месяц начала
-        start_month_combo = ctk.CTkComboBox(period_frame, 
-                                           values=self.months,
-                                           variable=self.period_vars["start_month"],
-                                           width=120,
-                                           state="readonly")
-        start_month_combo.grid(row=row, column=2, padx=2, pady=10)
-        start_month_combo.bind('<<ComboboxSelected>>', lambda e: self.on_period_change())
-        
-        # Нередактируемая часть: "по"
-        ctk.CTkLabel(period_frame, text="по", font=ctk.CTkFont(weight="bold")).grid(
-            row=row, column=3, padx=2, pady=10)
-        
-        # Выпадающий список: день окончания (1-31)
-        end_day_combo = ctk.CTkComboBox(period_frame, 
-                                       values=self.days,
-                                       variable=self.period_vars["end_day"],
-                                       width=60,
-                                       state="readonly")
-        end_day_combo.grid(row=row, column=4, padx=2, pady=10)
-        end_day_combo.bind('<<ComboboxSelected>>', lambda e: self.on_period_change())
-        
-        # Выпадающий список: месяц окончания
-        end_month_combo = ctk.CTkComboBox(period_frame, 
-                                         values=self.months,
-                                         variable=self.period_vars["end_month"],
-                                         width=120,
-                                         state="readonly")
-        end_month_combo.grid(row=row, column=5, padx=2, pady=10)
-        end_month_combo.bind('<<ComboboxSelected>>', lambda e: self.on_period_change())
-        
-        # Поле ввода: год (только цифры)
-        year_entry = ctk.CTkEntry(period_frame, textvariable=self.period_vars["year"], 
-                                 width=70, justify="center")
-        year_entry.grid(row=row, column=6, padx=2, pady=10)
-        year_entry.bind('<KeyRelease>', lambda e: self.on_period_change())
-        
-        # Валидация года - только цифры
-        def validate_year_input(new_value):
-            return new_value.isdigit() or new_value == ""
-        
-        year_entry.configure(validate="key", validatecommand=(year_entry.register(validate_year_input), '%P'))
-        
-        # Нередактируемая часть: "года"
-        ctk.CTkLabel(period_frame, text="года", font=ctk.CTkFont(weight="bold")).grid(
-            row=row, column=7, padx=(2, 10), pady=10)
-        
-        # Отображение итоговой строки
-        self.result_period_label = ctk.CTkLabel(tab, text="", font=ctk.CTkFont(size=12))
-        self.result_period_label.grid(row=len(main_labels)+3, column=0, columnspan=2, pady=10, sticky="w")
-        
-        # Кнопки
-        btn_frame = ctk.CTkFrame(tab)
-        btn_frame.grid(row=len(main_labels)+4, column=0, columnspan=2, pady=20)
-        
-        ctk.CTkButton(btn_frame, text="Сохранить все настройки", command=self.save_values).pack(side="left", padx=10)
+        # Создание вкладок
+        self.general_tab = GeneralTab(self.tabview.tab("Общие настройки"), self)
+        self.schools_tab = SchoolsTab(self.tabview.tab("Школы"), self)
+        self.generation_tab = GenerationTab(self.tabview.tab("Генерация"), self)
 
     def on_period_change(self):
         """Вызывается при изменении любого поля периода"""
         self.update_period_display()
-        # Автоматически сохраняем в date_conclusion
         self.save_period_to_common_values()
 
     def update_period_display(self):
         """Обновляет отображение итоговой строки периода"""
+        period_string = self.get_period_string()
+        self.general_tab.update_period_display(period_string)
+
+    def get_period_string(self):
+        """Получение строки периода"""
         start_day = self.period_vars["start_day"].get()
         start_month = self.period_vars["start_month"].get()
         end_day = self.period_vars["end_day"].get()
         end_month = self.period_vars["end_month"].get()
         year = self.period_vars["year"].get()
         
-        period_string = f"с {start_day} {start_month} по {end_day} {end_month} {year} года"
-        self.result_period_label.configure(text=f"Текущий период: {period_string}")
+        return f"с {start_day} {start_month} по {end_day} {end_month} {year} года"
 
     def save_period_to_common_values(self):
         """Сохраняет сформированный период в common_values"""
-        start_day = self.period_vars["start_day"].get()
-        start_month = self.period_vars["start_month"].get()
-        end_day = self.period_vars["end_day"].get()
-        end_month = self.period_vars["end_month"].get()
-        year = self.period_vars["year"].get()
-        
-        period_string = f"с {start_day} {start_month} по {end_day} {end_month} {year} года"
+        period_string = self.get_period_string()
         self.common_values["date_conclusion"].set(period_string)
 
     def parse_period_from_common_values(self):
@@ -230,41 +139,6 @@ class MainWindow(ctk.CTk):
         except Exception as e:
             print(f"Ошибка разбора периода: {e}")
 
-    # Остальные методы остаются без изменений
-    def setup_schools_tab(self):
-        tab = self.tabview.tab("Школы")
-        tab.grid_columnconfigure(0, weight=1)
-        tab.grid_rowconfigure(1, weight=1)
-        
-        type_frame = ctk.CTkFrame(tab)
-        type_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=10)
-        
-        ctk.CTkLabel(type_frame, text="Тип школ:").pack(side="left", padx=10)
-        ctk.CTkRadioButton(type_frame, text="Город", variable=self.school_type, 
-                          value="town", command=self.update_schools_display).pack(side="left", padx=10)
-        ctk.CTkRadioButton(type_frame, text="Район", variable=self.school_type, 
-                          value="district", command=self.update_schools_display).pack(side="left", padx=10)
-        
-        self.schools_table_frame = ctk.CTkScrollableFrame(tab)
-        self.schools_table_frame.grid(row=1, column=0, sticky="nsew", padx=10, pady=10)
-        self.schools_table_frame.grid_columnconfigure(0, weight=1)
-
-    def setup_generation_tab(self):
-        tab = self.tabview.tab("Генерация")
-        tab.grid_columnconfigure(0, weight=1)
-        tab.grid_rowconfigure(1, weight=1)
-        
-        ctk.CTkLabel(tab, text="Лог выполнения:").grid(row=0, column=0, sticky="w", padx=10, pady=5)
-        self.log_text = ctk.CTkTextbox(tab, height=200)
-        self.log_text.grid(row=1, column=0, sticky="nsew", padx=10, pady=5)
-        
-        self.progress_bar = ctk.CTkProgressBar(tab)
-        self.progress_bar.grid(row=2, column=0, sticky="ew", padx=10, pady=5)
-        self.progress_bar.set(0)
-        
-        ctk.CTkButton(tab, text="Сгенерировать договоры", command=self.generate_contracts,
-                     fg_color="green", hover_color="dark green").grid(row=3, column=0, pady=20)
-
     def load_initial_data(self):
         """Загрузка начальных данных"""
         self.load_values()
@@ -282,39 +156,8 @@ class MainWindow(ctk.CTk):
         if not self.schools_data:
             return
 
-        for widget in self.schools_table_frame.winfo_children():
-            widget.destroy()
-
-        self.school_vars = {}
-      
-        headers = ["Школа", "Кол-во детей"]
-        for i, header in enumerate(headers):
-            ctk.CTkLabel(self.schools_table_frame, text=header, font=ctk.CTkFont(weight="bold")).grid(
-                row=0, column=i, padx=5, pady=5, sticky="ew")
-
         schools = self.schools_data[0]["schools"][self.school_type.get()]
-        for row, school in enumerate(schools, 1):
-            ctk.CTkLabel(self.schools_table_frame, text=school['name']).grid(
-                row=row, column=0, padx=5, pady=5, sticky="w")
-            
-            default_value = str(school.get('child_count', 0))
-            school_var = ctk.StringVar(value="")
-            self.school_vars[school['id']] = school_var
-            
-            school_entry = ctk.CTkEntry(
-                self.schools_table_frame, 
-                textvariable=school_var, 
-                width=80,
-                placeholder_text=default_value,
-                placeholder_text_color="gray60"
-            )
-            school_entry.grid(row=row, column=1, padx=5, pady=5)
-            
-            school_entry.bind('<KeyRelease>', 
-                lambda event, s=school, var=school_var: self.set_child_count(s, var.get()))
-
-        self.schools_table_frame.grid_columnconfigure(0, weight=1)
-        self.schools_table_frame.grid_columnconfigure(1, weight=0)
+        self.schools_tab.update_schools_display(schools)
 
     def set_child_count(self, school, value):
         """Установка количества детей для школы"""
@@ -352,13 +195,14 @@ class MainWindow(ctk.CTk):
     def generate_contracts(self):
         """Генерация договоров"""
         try:
-            self.log_text.delete("1.0", "end")
-            self.log_text.insert("end", "Начало генерации договоров...\n")
+            self.generation_tab.clear_log()
+            self.generation_tab.log_message("Начало генерации договоров...")
             self.update()
 
             # Убедимся, что период сохранен перед генерацией
             self.save_period_to_common_values()
 
+            # Проверка заполнения обязательных полей
             if not all([self.common_values[key].get() for key in self.common_values]):
                 messagebox.showwarning("Внимание", "Заполните все общие параметры!")
                 return
@@ -367,22 +211,26 @@ class MainWindow(ctk.CTk):
                 messagebox.showerror("Ошибка", "Данные о школах не загружены!")
                 return
 
+            # Подготовка данных для генерации
             common_values_dict = {
                 "cost_eat": self.common_values["cost_eat"].get(),
                 "day_count": self.common_values["day_count"].get(),
                 "date_conclusion": self.common_values["date_conclusion"].get(),
-                
+                # Добавляем год из периода
+                "year": self.period_vars["year"].get(),
+                # Добавляем дату для шаблона (текущая дата)
+                "date": self.get_current_date()
             }
 
             def progress_callback(progress):
-                self.progress_bar.set(progress)
+                self.generation_tab.set_progress(progress)
                 self.update()
 
             def log_callback(message):
-                self.log_text.insert("end", message + "\n")
-                self.log_text.see("end")
+                self.generation_tab.log_message(message)
                 self.update()
 
+            # Запуск генерации
             successful_count, total_schools = self.contract_generator.generate_contracts(
                 common_values_dict,
                 self.schools_data,
@@ -391,13 +239,22 @@ class MainWindow(ctk.CTk):
                 log_callback
             )
 
-            self.log_text.insert("end", f"\nГенерация завершена! Успешно: {successful_count}/{total_schools}\n")
-            messagebox.showinfo("Успех", f"Договоры сгенерированы! Успешно: {successful_count}/{total_schools}")
+            self.generation_tab.log_message(f"\nГенерация завершена! Успешно: {successful_count}/{total_schools}")
+            
+            if successful_count > 0:
+                messagebox.showinfo("Успех", f"Договоры сгенерированы! Успешно: {successful_count}/{total_schools}")
+            else:
+                messagebox.showwarning("Внимание", "Не удалось сгенерировать ни одного договора!")
 
         except Exception as e:
             messagebox.showerror("Ошибка", f"Ошибка генерации: {str(e)}")
-            self.log_text.insert("end", f"Критическая ошибка: {str(e)}\n")
+            self.generation_tab.log_message(f"Критическая ошибка: {str(e)}\n")
 
-if __name__ == "__main__":
-    app = MainWindow()
-    app.mainloop()
+    def get_current_date(self):
+        """Получение текущей даты в формате дд.мм.гггг"""
+        from datetime import datetime
+        return datetime.now().strftime("%d.%m.%Y")
+
+    def on_school_type_change(self):
+        """Обработчик изменения типа школ"""
+        self.update_schools_display()
