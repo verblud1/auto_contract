@@ -3,22 +3,25 @@ from decimal import Decimal, ROUND_HALF_UP
 from datetime import datetime
 from pathlib import Path
 import locale
-from tkinter import messagebox
 import sys
 import os
 
-# Исправляем импорт - убираем точку если это не пакет
+# Исправляем импорт
 try:
-    from .utils import number_to_words
+    from .utils.number_to_words import number_to_words
 except ImportError:
-    # Альтернативный импорт для случая, когда модуль не является пакетом
-    from utils import number_to_words
+    try:
+        from utils.number_to_words import number_to_words
+    except ImportError:
+        # Запасной вариант
+        def number_to_words(number):
+            return f"{number} рублей"
 
 class ContractGenerator:
     def __init__(self, data_manager):
         self.data_manager = data_manager
         
-        # Устанавливаем локаль на случай, если она не установлена в data_manager
+        # Устанавливаем локаль
         try:
             locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
         except locale.Error:
@@ -30,75 +33,92 @@ class ContractGenerator:
                 except:
                     pass  # Если не удалось установить локаль, продолжаем без нее
 
-
-    def generate_contracts(self):
-        """Генерация договоров"""
+    def generate_contracts(self, common_values, schools_data, school_type, progress_callback=None, log_callback=None):
+        """Генерация договоров для всех школ"""
         try:
-            self.generation_tab.clear_log()
-            self.generation_tab.log_message("Начало генерации договоров...")
-            self.update()
+            if log_callback:
+                log_callback("Начало генерации договоров...")
 
-            # Убедимся, что период сохранен перед генерацией
-            self.save_period_to_common_values()
+            # Проверяем обязательные параметры
+            if not common_values or not schools_data:
+                if log_callback:
+                    log_callback("Ошибка: отсутствуют необходимые данные")
+                return 0, 0
 
-            # Проверка заполнения обязательных полей с проверкой наличия ключей
-            required_fields = ["cost_eat", "day_count", "date_conclusion", "date", "year"]
-            missing_fields = []
+            current_time = datetime.now().strftime("%Y.%m.%d (%H:%M)")
+            type_name_ru = "Город" if school_type == "town" else "Район"
             
-            for field in required_fields:
-                if field not in self.common_values:
-                    missing_fields.append(f"{field} (отсутствует ключ)")
-                else:
-                    value = self.common_values[field].get()
-                    if not value:
-                        missing_fields.append(field)
+            new_output_folder_name = f"{type_name_ru} договоры от {current_time}"
+            folder_output = self.data_manager.output_dir / new_output_folder_name
             
-            if missing_fields:
-                messagebox.showwarning("Внимание", f"Заполните все общие параметры! Проблемы с: {', '.join(missing_fields)}")
-                return
+            # Создание папки с обработкой ошибок
+            try:
+                folder_output.mkdir(parents=True, exist_ok=True)
+                if log_callback:
+                    log_callback(f"Создана папка: {folder_output}")
+            except Exception as e:
+                if log_callback:
+                    log_callback(f"Ошибка создания папки: {str(e)}")
+                return 0, 0
 
-            if not self.schools_data:
-                messagebox.showerror("Ошибка", "Данные о школах не загружены!")
-                return
-
-            # Подготовка данных для генерации
-            common_values_dict = {}
-            for key in required_fields:
-                if key in self.common_values:
-                    common_values_dict[key] = self.common_values[key].get()
-                else:
-                    self.generation_tab.log_message(f"Ошибка: ключ '{key}' отсутствует в common_values")
-                    messagebox.showerror("Ошибка", f"Отсутствует ключ '{key}' в настройках")
-                    return
-
-            def progress_callback(progress):
-                self.generation_tab.set_progress(progress)
-                self.update()
-
-            def log_callback(message):
-                self.generation_tab.log_message(message)
-                self.update()
-
-            # Запуск генерации
-            successful_count, total_schools = self.contract_generator.generate_contracts(
-                common_values_dict,
-                self.schools_data,
-                self.school_type.get(),
-                progress_callback,
-                log_callback
-            )
-
-            self.generation_tab.log_message(f"\nГенерация завершена! Успешно: {successful_count}/{total_schools}")
+            # Проверяем доступность школ
+            try:
+                schools = schools_data[0]["schools"][school_type]
+                total_schools = len(schools)
+                
+                if total_schools == 0:
+                    if log_callback:
+                        log_callback("Нет школ для обработки")
+                    return 0, 0
+            except (KeyError, IndexError, TypeError) as e:
+                if log_callback:
+                    log_callback(f"Ошибка структуры данных школ: {str(e)}")
+                return 0, 0
             
-            if successful_count > 0:
-                messagebox.showinfo("Успех", f"Договоры сгенерированы! Успешно: {successful_count}/{total_schools}")
-            else:
-                messagebox.showwarning("Внимание", "Не удалось сгенерировать ни одного договора!")
+            successful_count = 0
+            for i, school in enumerate(schools):
+                try:
+                    if log_callback:
+                        log_callback(f"Обработка {school['name']}...")
+
+                    # Пропускаем школы с нулевым количеством детей
+                    child_count = school.get('child_count', 0)
+                    if child_count <= 0:
+                        if log_callback:
+                            log_callback(f"Пропуск: {school['name']} (0 детей)")
+                        continue
+
+                    # Генерация договора для одной школы
+                    result = self.generate_single_contract(
+                        common_values, school, folder_output, current_time, log_callback
+                    )
+                    
+                    if result:
+                        successful_count += 1
+                        if log_callback:
+                            log_callback(f"Успешно: {school['name']}")
+                    else:
+                        if log_callback:
+                            log_callback(f"Ошибка: {school['name']}")
+
+                    # Обновление прогресса
+                    if progress_callback:
+                        progress = (i + 1) / total_schools
+                        progress_callback(progress)
+
+                except Exception as e:
+                    if log_callback:
+                        log_callback(f"Ошибка при обработке {school['name']}: {str(e)}")
+
+            if log_callback:
+                log_callback(f"Генерация завершена. Успешно: {successful_count}/{total_schools}")
+                
+            return successful_count, total_schools
 
         except Exception as e:
-            messagebox.showerror("Ошибка", f"Ошибка генерации: {str(e)}")
-            self.generation_tab.log_message(f"Критическая ошибка: {str(e)}\n")
-
+            if log_callback:
+                log_callback(f"Критическая ошибка генерации: {str(e)}")
+            return 0, 0
 
     def generate_single_contract(self, common_values, school, output_dir, current_time, log_callback=None):
         """Генерация договора для одной школы"""

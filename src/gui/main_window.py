@@ -51,6 +51,8 @@ class MainWindow(ctk.CTk):
             "cost_eat": ctk.DoubleVar(value=0.0),
             "day_count": ctk.IntVar(value=0),
             "date_conclusion": ctk.StringVar(value=""),
+            "date": ctk.StringVar(value=""),  # ДОБАВЛЕНО: отсутствующий ключ
+            "year": ctk.StringVar(value="")   # ДОБАВЛЕНО: отсутствующий ключ
         }
         
         self.period_vars = {
@@ -82,6 +84,18 @@ class MainWindow(ctk.CTk):
         self.general_tab = GeneralTab(self.tabview.tab("Общие настройки"), self)
         self.schools_tab = SchoolsTab(self.tabview.tab("Школы"), self)
         self.generation_tab = GenerationTab(self.tabview.tab("Генерация"), self)
+
+    def load_initial_data(self):
+        """Загрузка начальных данных - ДОБАВЛЕННЫЙ МЕТОД"""
+        self.load_values()
+        self.schools_data = self.data_manager.load_schools_config()
+        if self.schools_data:
+            self.update_schools_display()
+        else:
+            messagebox.showerror("Ошибка", "Не удалось загрузить конфигурацию школ!")
+
+        # После загрузки common_values разбираем период
+        self.parse_period_from_common_values()
 
     def on_period_change(self):
         """Вызывается при изменении любого поля периода"""
@@ -206,13 +220,6 @@ class MainWindow(ctk.CTk):
         except ValueError:
             pass
 
-    def load_values(self):
-        """Загрузка общих значений из файла"""
-        common_values_dict = self.data_manager.load_common_values()
-        for key, value in common_values_dict.items():
-            if key in self.common_values:
-                self.common_values[key].set(value)
-
     def save_values(self):
         """Сохранение значений в файл"""
         # Убедимся, что период тоже сохранен
@@ -233,67 +240,67 @@ class MainWindow(ctk.CTk):
 
     def generate_contracts(self):
         """Генерация договоров"""
-        #try:
-        self.generation_tab.clear_log()
-        self.generation_tab.log_message("Начало генерации договоров...")
-        self.update()
+        try:  # РАСКОММЕНТИРОВАНО
+            self.generation_tab.clear_log()
+            self.generation_tab.log_message("Начало генерации договоров...")
+            self.update()
 
             # Убедимся, что период сохранен перед генерацией
-        self.save_period_to_common_values()
+            self.save_period_to_common_values()
 
             # Проверка заполнения обязательных полей
-        required_fields = ["cost_eat", "day_count", "date_conclusion", "date", "year"]
-        missing_fields = []
+            required_fields = ["cost_eat", "day_count", "date_conclusion", "date", "year"]
+            missing_fields = []
             
-        for field in required_fields:
-            vextalue = self.common_values[field].get()
-            if not value:
-                missing_fields.append(field)
+            for field in required_fields:
+                value = self.common_values[field].get()  # ИСПРАВЛЕНО: было vextalue
+                if not value:
+                    missing_fields.append(field)
             
-        if missing_fields:
-            messagebox.showwarning("Внимание", f"Заполните все общие параметры! Отсутствуют: {', '.join(missing_fields)}")
-            return
+            if missing_fields:
+                messagebox.showwarning("Внимание", f"Заполните все общие параметры! Отсутствуют: {', '.join(missing_fields)}")
+                return
 
-        if not self.schools_data:
-            messagebox.showerror("Ошибка", "Данные о школах не загружены!")
-            return
+            if not self.schools_data:
+                messagebox.showerror("Ошибка", "Данные о школах не загружены!")
+                return
 
-        # Подготовка данных для генерации
-        common_values_dict = {
-            "cost_eat": self.common_values["cost_eat"].get(),
-            "day_count": self.common_values["day_count"].get(),
-            "date_conclusion": self.common_values["date_conclusion"].get(),
-            "date": self.common_values["date"].get(),
-            "year": self.common_values["year"].get()
-        }
+            # Подготовка данных для генерации
+            common_values_dict = {
+                "cost_eat": self.common_values["cost_eat"].get(),
+                "day_count": self.common_values["day_count"].get(),
+                "date_conclusion": self.common_values["date_conclusion"].get(),
+                "date": self.common_values["date"].get(),
+                "year": self.common_values["year"].get()
+            }
 
-        def progress_callback(progress):
-            self.generation_tab.set_progress(progress)
-            self.update()
+            def progress_callback(progress):
+                self.generation_tab.set_progress(progress)
+                self.update()
 
-        def log_callback(message):
-            self.generation_tab.log_message(message)
-            self.update()
+            def log_callback(message):
+                self.generation_tab.log_message(message)
+                self.update()
 
-        # Запуск генерации
-        successful_count, total_schools = self.contract_generator.generate_contracts(
-            common_values_dict,
-            self.schools_data,
-            self.school_type.get(),
-            progress_callback,
-            log_callback
-        )
+            # Запуск генерации
+            successful_count, total_schools = self.contract_generator.generate_contracts(
+                common_values_dict,
+                self.schools_data,
+                self.school_type.get(),
+                progress_callback,
+                log_callback
+            )
 
-        self.generation_tab.log_message(f"\nГенерация завершена! Успешно: {successful_count}/{total_schools}")
+            self.generation_tab.log_message(f"\nГенерация завершена! Успешно: {successful_count}/{total_schools}")
             
-        if successful_count > 0:
-            messagebox.showinfo("Успех", f"Договоры сгенерированы! Успешно: {successful_count}/{total_schools}")
-        else:
-            messagebox.showwarning("Внимание", "Не удалось сгенерировать ни одного договора!")
+            if successful_count > 0:
+                messagebox.showinfo("Успех", f"Договоры сгенерированы! Успешно: {successful_count}/{total_schools}")
+            else:
+                messagebox.showwarning("Внимание", "Не удалось сгенерировать ни одного договора!")
      
-        #except Exception as e:
-        #    messagebox.showerror("Ошибка", f"Ошибка генерации: {str(e)}")
-         #   self.generation_tab.log_message(f"Критическая ошибка: {str(e)}\n")
+        except Exception as e:  # РАСКОММЕНТИРОВАНО
+            messagebox.showerror("Ошибка", f"Ошибка генерации: {str(e)}")
+            self.generation_tab.log_message(f"Критическая ошибка: {str(e)}\n")
             
     def get_current_date(self):
         """Получение текущей даты в формате дд.мм.гггг"""
